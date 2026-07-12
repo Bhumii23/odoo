@@ -91,9 +91,9 @@ export const updateTripStatus = asyncHandler(async (req: Request, res: Response)
   const tripId = Number(id);
 
   try {
-    const { status, finalOdometer } = updateTripStatusSchema.parse(req.body);
+    const { status, finalOdometer, fuelLiters, fuelCost, revenue, expenses } = updateTripStatusSchema.parse(req.body);
 
-    const trip = await prisma.trip.findUnique({ where: { id: tripId }, include: { vehicle: true } });
+    const trip = await prisma.trip.findUnique({ where: { id: tripId }, include: { vehicle: true, driver: true } });
     if (!trip) {
       res.status(404).json({ error: 'Trip not found' });
       return;
@@ -101,6 +101,10 @@ export const updateTripStatus = asyncHandler(async (req: Request, res: Response)
 
     // Status transitions
     if (status === 'DISPATCHED' && trip.status === 'DRAFT') {
+      if (trip.vehicle.status !== 'AVAILABLE' || trip.driver.status !== 'AVAILABLE') {
+        res.status(400).json({ error: 'Vehicle or Driver is no longer available' });
+        return;
+      }
       // Use transaction to ensure vehicle/driver statuses sync with trip
       await prisma.$transaction([
         prisma.trip.update({ where: { id: tripId }, data: { status: 'DISPATCHED' } }),
@@ -108,8 +112,8 @@ export const updateTripStatus = asyncHandler(async (req: Request, res: Response)
         prisma.driver.update({ where: { id: trip.driverId }, data: { status: 'ON_TRIP' } }),
       ]);
     } else if (status === 'COMPLETED' && trip.status === 'DISPATCHED') {
-      if (finalOdometer === undefined) {
-        res.status(400).json({ error: 'finalOdometer is required when completing a trip' });
+      if (finalOdometer === undefined || fuelLiters === undefined || fuelCost === undefined || revenue === undefined) {
+        res.status(400).json({ error: 'finalOdometer, fuelLiters, fuelCost, and revenue are required when completing a trip' });
         return;
       }
       if (finalOdometer < trip.vehicle.odometer) {
@@ -127,8 +131,29 @@ export const updateTripStatus = asyncHandler(async (req: Request, res: Response)
       await prisma.$transaction(async (tx) => {
         await tx.trip.update({
           where: { id: tripId },
-          data: { status: 'COMPLETED', completedAt: now }
+          data: { status: 'COMPLETED', completedAt: now, revenue: revenue }
         });
+        
+        await tx.fuelLog.create({
+          data: {
+            vehicleId: trip.vehicleId,
+            liters: fuelLiters,
+            cost: fuelCost,
+            date: now
+          }
+        });
+
+        if (expenses && expenses.length > 0) {
+          await tx.expense.createMany({
+            data: expenses.map((exp: any) => ({
+              tripId: tripId,
+              vehicleId: trip.vehicleId,
+              type: exp.type,
+              amount: exp.amount,
+              date: now
+            }))
+          });
+        }
         
         await tx.driver.update({
           where: { id: trip.driverId },

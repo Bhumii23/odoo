@@ -12,4 +12,11 @@ export const createTripSchema = z.object({
 export const updateTripStatusSchema = z.object({
   status: z.enum(['DRAFT', 'DISPATCHED', 'COMPLETED', 'CANCELLED']),
   finalOdometer: z.number().positive('Final odometer must be a positive number').optional(),
+  fuelLiters: z.number().positive('Fuel liters must be a positive number').optional(),
+  fuelCost: z.number().nonnegative('Fuel cost must be a non-negative number').optional(),
+  revenue: z.number().nonnegative('Revenue must be a non-negative number').optional(),
+  expenses: z.array(z.object({
+    type: z.string().min(1, 'Expense type is required'),
+    amount: z.number().positive('Expense amount must be a positive number')
+  })).optional(),
 });

@@ -107,6 +107,7 @@ model Trip {
   cargoWeight      Float
   plannedDistance  Float
   status           TripStatus
+  revenue          Float?
   createdAt        DateTime   @default(now())
   completedAt      DateTime?
 
