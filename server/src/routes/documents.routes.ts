@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { uploadVehicleDocument, getVehicleDocuments, upload } from '../controllers/documents.controller';
 import { authenticate } from '../middleware/authenticate';
-import { requirePermission } from '../middleware/authorize';
+import { requirePermission } from '../middleware/requirePermission';
 
 const router = Router();
 

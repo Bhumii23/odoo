@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
-import { asyncHandler } from '../middleware/asyncHandler';
+import { asyncHandler } from './auth.controller';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -28,7 +28,7 @@ export const upload = multer({
 });
 
 export const uploadVehicleDocument = asyncHandler(async (req: Request, res: Response) => {
-  const vehicleId = parseInt(req.params.id);
+  const vehicleId = parseInt(req.params.id as string);
   const { title } = req.body;
   const file = req.file;
 
@@ -57,7 +57,7 @@ export const uploadVehicleDocument = asyncHandler(async (req: Request, res: Resp
 });
 
 export const getVehicleDocuments = asyncHandler(async (req: Request, res: Response) => {
-  const vehicleId = parseInt(req.params.id);
+  const vehicleId = parseInt(req.params.id as string);
 
   if (isNaN(vehicleId)) {
     res.status(400).json({ error: 'Invalid vehicle ID' });
