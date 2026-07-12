@@ -27,6 +27,8 @@ services:
     environment:
       # We override the local DATABASE_URL here because Docker needs to connect to the 'db' container, not 'localhost'
       - DATABASE_URL=postgresql://transitops:devpassword@db:5432/transitops
+    volumes:
+      - ./server/uploads:/usr/src/app/uploads
     depends_on:
       - db
 
