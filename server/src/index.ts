@@ -40,6 +40,13 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+import { Request, Response, NextFunction } from 'express';
+
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error('[Global Error]', err);
+  res.status(500).json({ error: 'Internal Server Error', message: err.message });
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

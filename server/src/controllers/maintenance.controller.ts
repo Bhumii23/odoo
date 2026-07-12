@@ -45,23 +45,17 @@ export const createMaintenanceLog = asyncHandler(async (req: Request, res: Respo
       return;
     }
 
-    const [log] = await prisma.$transaction([
-      prisma.maintenanceLog.create({
-        data: {
-          vehicleId: data.vehicleId,
-          driverId: data.driverId || null,
-          serviceType: data.serviceType,
-          description: data.description || null,
-          cost: data.cost,
-          date: new Date(data.date),
-          status: 'IN_PROGRESS', // Creating active maintenance record automatically sets IN_SHOP
-        },
-      }),
-      prisma.vehicle.update({
-        where: { id: data.vehicleId },
-        data: { status: 'IN_SHOP' }
-      })
-    ]);
+    const log = await prisma.maintenanceLog.create({
+      data: {
+        vehicleId: data.vehicleId,
+        driverId: data.driverId || null,
+        serviceType: data.serviceType,
+        description: data.description || null,
+        cost: data.cost,
+        date: new Date(data.date),
+        status: 'PENDING_APPROVAL', // Requires Fleet Manager approval before moving to IN_SHOP
+      },
+    });
 
     // Integration Instructions Implementation: 
     // Safely deduct points from the driver if they were involved in an accident.
