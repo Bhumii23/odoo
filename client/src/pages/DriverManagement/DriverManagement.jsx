@@ -1,15 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { initialDrivers } from '../../data/driversData';
+import api from '../../lib/api';
 import DriverHeader from '../../components/drivers/DriverHeader';
 import DriverFilters from '../../components/drivers/DriverFilters';
 import DriverTable from '../../components/drivers/DriverTable';
 import { X, Users, ShieldCheck, Truck, AlertTriangle, FileText, Sparkles } from 'lucide-react';
 
 export default function DriverManagement() {
-  const [drivers, setDrivers] = useState(initialDrivers);
+  const [drivers, setDrivers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchDrivers();
+  }, []);
+
+  const fetchDrivers = async () => {
+    setIsLoading(true);
+    try {
+      const res = await api.get('/drivers');
+      setDrivers(res.data);
+    } catch (err) {
+      console.error('Error fetching drivers', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Uplifted Filters State
   const [filters, setFilters] = useState({
@@ -40,28 +56,28 @@ export default function DriverManagement() {
   };
 
   // Add Driver Form Submit
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (!form.name || !form.employeeId || !form.licenseNumber) {
       alert("Please fill in all required fields.");
       return;
     }
 
-    const newDriver = {
-      id: Date.now(),
-      name: form.name,
-      employeeId: form.employeeId,
-      licenseNumber: form.licenseNumber,
-      licenseCategory: form.licenseCategory,
-      phoneNumber: form.phoneNumber || '-',
-      assignedVehicle: form.assignedVehicle === 'None' ? 'None' : form.assignedVehicle,
-      safetyScore: Number(form.safetyScore) || 100,
-      licenseExpiry: form.licenseExpiry,
-      status: form.status,
-    };
+    try {
+      const res = await api.post('/drivers', {
+        name: form.name,
+        licenseNumber: form.licenseNumber,
+        licenseCategory: form.licenseCategory,
+        contactNumber: form.phoneNumber || '-',
+        licenseExpiry: form.licenseExpiry,
+      });
 
-    setDrivers((prev) => [newDriver, ...prev]);
-    setIsModalOpen(false);
+      setDrivers((prev) => [res.data, ...prev]);
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error(err);
+      alert("Error adding driver");
+    }
 
     // Reset Form
     setForm({

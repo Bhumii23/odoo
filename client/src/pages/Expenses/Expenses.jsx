@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { initialExpenses } from '../../data/operationsData';
+import React, { useState, useEffect } from 'react';
+import api from '../../lib/api';
 import { Plus, Search, Edit2, Trash2, FileSpreadsheet, X } from 'lucide-react';
 
 // 1. ExpenseHeader Component
@@ -159,9 +159,32 @@ function ExpenseTable({ expenses, onDelete, permission }) {
 
 // 5. Main Page Component: Expenses
 export default function Expenses({ permission }) {
-  const [expenses, setExpenses] = useState(initialExpenses);
+  const [expenses, setExpenses] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    fetchExpenses();
+  }, []);
+
+  const fetchExpenses = async () => {
+    try {
+      const res = await api.get('/expenses');
+      const formatted = res.data.map(exp => ({
+        id: exp.id,
+        tripId: exp.tripId ? String(exp.tripId) : '-',
+        vehicle: exp.vehicle?.registrationNumber || String(exp.vehicleId),
+        type: exp.type,
+        amount: `₹ ${Number(exp.amount).toLocaleString('en-IN')}`,
+        date: new Date(exp.date).toISOString().split('T')[0],
+        remarks: '-',
+        status: 'Approved'
+      }));
+      setExpenses(formatted);
+    } catch(err) {
+      console.error(err);
+    }
+  };
 
   // Form states for Add Expense
   const [form, setForm] = useState({
@@ -193,26 +216,39 @@ export default function Expenses({ permission }) {
     document.body.removeChild(link);
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (!form.vehicle || !form.amount) {
       alert("Please fill in all required fields.");
       return;
     }
 
-    const newExpense = {
-      id: Date.now(),
-      tripId: form.tripId || 'TRIP-N/A',
-      vehicle: form.vehicle,
-      type: form.type,
-      amount: `₹ ${Number(form.amount).toLocaleString('en-IN')}`,
-      date: form.date,
-      remarks: form.remarks || '-',
-      status: form.status,
-    };
+    try {
+      const res = await api.post('/expenses', {
+        vehicleId: parseInt(form.vehicle),
+        tripId: form.tripId ? parseInt(form.tripId) : undefined,
+        type: form.type,
+        amount: Number(form.amount),
+        date: form.date ? new Date(form.date).toISOString() : undefined,
+      });
 
-    setExpenses((prev) => [newExpense, ...prev]);
-    setIsModalOpen(false);
+      const newExpense = {
+        id: res.data.id,
+        tripId: res.data.tripId ? String(res.data.tripId) : '-',
+        vehicle: res.data.vehicle?.registrationNumber || String(res.data.vehicleId),
+        type: res.data.type,
+        amount: `₹ ${Number(res.data.amount).toLocaleString('en-IN')}`,
+        date: new Date(res.data.date).toISOString().split('T')[0],
+        remarks: '-',
+        status: 'Approved',
+      };
+
+      setExpenses((prev) => [newExpense, ...prev]);
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error(err);
+      alert("Error adding expense.");
+    }
     // Reset form
     setForm({
       tripId: '',
@@ -278,7 +314,7 @@ export default function Expenses({ permission }) {
                   <input
                     type="text"
                     required
-                    placeholder="e.g. GJ01AB4521"
+                    placeholder="e.g. 1"
                     value={form.vehicle}
                     onChange={(e) => setForm({...form, vehicle: e.target.value})}
                     className="bg-slate-50 border border-slate-100 text-slate-700 text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-purple-300 focus:bg-white transition-all font-semibold"

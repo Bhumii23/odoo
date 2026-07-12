@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { initialServiceHistory, initialVehicles } from '../data';
+import { useMemo, useState, useEffect } from 'react';
+import api from '../../../lib/api';
 
 const initialFilters = {
   search: '',
@@ -9,16 +9,33 @@ const initialFilters = {
 };
 
 export function useMaintenance() {
-  const [vehicles, setVehicles] = useState(initialVehicles);
-  const [serviceHistory, setServiceHistory] = useState(initialServiceHistory);
+  const [vehicles, setVehicles] = useState([]);
+  const [serviceHistory, setServiceHistory] = useState([]);
   const [filters, setFilters] = useState(initialFilters);
+
+  const fetchAll = async () => {
+    try {
+      const [maintRes, vehiclesRes] = await Promise.all([
+        api.get('/maintenance'),
+        api.get('/vehicles')
+      ]);
+      setServiceHistory(maintRes.data);
+      setVehicles(vehiclesRes.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchAll();
+  }, []);
 
   const stats = useMemo(() => {
     const inShop = vehicles.filter((vehicle) => vehicle.status === 'In Shop').length;
     const upcoming = serviceHistory.filter((record) => record.status === 'Scheduled').length;
     const completed = serviceHistory.filter((record) => record.status === 'Completed').length;
     const averageCost = serviceHistory.length
-      ? Math.round(serviceHistory.reduce((sum, record) => sum + record.estimatedCost, 0) / serviceHistory.length)
+      ? Math.round(serviceHistory.reduce((sum, record) => sum + (record.cost || 0), 0) / serviceHistory.length)
       : 0;
 
     return [
@@ -42,31 +59,39 @@ export function useMaintenance() {
     });
   }, [filters, serviceHistory]);
 
-  const scheduleMaintenance = (payload) => {
-    setVehicles((current) => current.map((vehicle) => (vehicle.id === payload.vehicleId ? { ...vehicle, status: 'In Shop' } : vehicle)));
-    setServiceHistory((current) => [
-      {
-        id: `SRV-${String(current.length + 1000).padStart(4, '0')}`,
-        ...payload,
-        status: 'Scheduled',
-      },
-      ...current,
-    ]);
+  const scheduleMaintenance = async (payload) => {
+    try {
+      // payload from form uses camelCase properties. Backend might expect specific ones.
+      const res = await api.post('/maintenance', {
+        vehicleId: payload.vehicleId,
+        serviceType: 'ROUTINE_MAINTENANCE', // Simplified for hackathon
+        description: payload.description,
+        cost: payload.estimatedCost || 0,
+      });
+      setServiceHistory([res.data, ...serviceHistory]);
+      setVehicles((current) => current.map((v) => (v.id === payload.vehicleId ? { ...v, status: 'In Shop' } : v)));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const completeMaintenance = (serviceId) => {
-    setServiceHistory((current) =>
-      current.map((record) =>
-        record.id === serviceId
-          ? { ...record, status: 'Completed', completedAt: new Date().toISOString().slice(0, 10) }
-          : record
-      )
-    );
-    const completedRecord = serviceHistory.find((record) => record.id === serviceId);
-    if (completedRecord) {
-      setVehicles((current) =>
-        current.map((vehicle) => (vehicle.id === completedRecord.vehicleId ? { ...vehicle, status: 'Available' } : vehicle))
+  const completeMaintenance = async (serviceId) => {
+    try {
+      const res = await api.put(`/maintenance/${serviceId}/status`, { status: 'COMPLETED' });
+      setServiceHistory((current) =>
+        current.map((record) =>
+          record.id === serviceId
+            ? { ...record, status: 'COMPLETED' }
+            : record
+        )
       );
+      if (res.data.vehicleId) {
+        setVehicles((current) =>
+          current.map((vehicle) => (vehicle.id === res.data.vehicleId ? { ...vehicle, status: 'AVAILABLE' } : vehicle))
+        );
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 

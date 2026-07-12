@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { AlertTriangle } from 'lucide-react';
-import { initialDrivers, initialVehicles } from '../data';
 
 const emptyForm = {
   source: '',
@@ -16,17 +15,17 @@ const emptyForm = {
   notes: '',
 };
 
-export default function TripForm({ onSubmit }) {
+export default function TripForm({ onSubmit, drivers, vehicles }) {
   const [form, setForm] = useState(emptyForm);
   const [warning, setWarning] = useState('');
 
   const availableVehicles = useMemo(
-    () => initialVehicles.filter((vehicle) => vehicle.status === 'Available'),
-    []
+    () => vehicles.filter((vehicle) => vehicle.status === 'Available'),
+    [vehicles]
   );
   const availableDrivers = useMemo(
-    () => initialDrivers.filter((driver) => driver.status === 'Available'),
-    []
+    () => drivers.filter((driver) => driver.status === 'Available'),
+    [drivers]
   );
 
   const selectedVehicle = useMemo(

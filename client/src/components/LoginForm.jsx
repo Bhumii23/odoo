@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle2 } from 'lucide-react';
 import SocialLoginButtons from './SocialLoginButtons';
+import api from '../lib/api';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function LoginForm({ onSwitchTab, onSubmitSuccess }) {
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -32,23 +35,31 @@ export default function LoginForm({ onSwitchTab, onSubmitSuccess }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsSubmitting(true);
     setErrors({});
 
-    // Mock api call delay
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const response = await api.post('/auth/login', {
+        email,
+        password,
+        rememberMe
+      });
+      
+      login(response.data.token);
       setIsSuccess(true);
       
-      // Delay before redirecting to dashboard
       setTimeout(() => {
         onSubmitSuccess();
-      }, 1000);
-    }, 1500);
+      }, 500);
+    } catch (err) {
+      setErrors({ email: err.response?.data?.error || 'Login failed. Please check credentials.' });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleSocialClick = (provider) => {

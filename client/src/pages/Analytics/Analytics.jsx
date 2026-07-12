@@ -12,7 +12,7 @@ import AIRecommendationsCard from '../../components/analytics/AIRecommendationsC
 import TopPerformersCard from '../../components/analytics/TopPerformersCard';
 import MaintenanceAlertsCard from '../../components/analytics/MaintenanceAlertsCard';
 import QuickStatsPanel from '../../components/analytics/QuickStatsPanel';
-import { KPI_METRICS } from '../../data/analyticsData';
+import api from '../../lib/api';
 
 import {
   Car,
@@ -34,15 +34,15 @@ import {
 
 const DATE_RANGES = ['Today', 'Week', 'Month', 'Year'];
 
-// ── Utility: export CSV ──────────────────────────────────────────
-function buildCSVContent() {
+function buildCSVContent(metrics) {
+  if (!metrics) return '';
   return (
     'data:text/csv;charset=utf-8,' +
     'Metric,Value,Change\n' +
-    `Total Vehicles,${KPI_METRICS.totalVehicles},N/A\n` +
-    `Active Vehicles,${KPI_METRICS.activeVehicles},+2%\n` +
-    `Fleet Utilization,${KPI_METRICS.fleetUtilization}%,+4%\n` +
-    `Operational Cost,${KPI_METRICS.operationalCost},-12%\n`
+    `Total Vehicles,${metrics.totalVehicles},N/A\n` +
+    `Active Vehicles,${metrics.activeVehicles},+2%\n` +
+    `Fleet Utilization,${metrics.fleetUtilization}%,+4%\n` +
+    `Operational Cost,${metrics.operationalCost},-12%\n`
   );
 }
 
@@ -63,10 +63,26 @@ export default function Analytics() {
   });
 
   const [activeDateRange, setActiveDateRange] = useState('Month');
+  const [metrics, setMetrics] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  React.useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const res = await api.get('/analytics/dashboard');
+        setMetrics(res.data);
+      } catch (err) {
+        console.error('Failed to fetch analytics', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchDashboard();
+  }, []);
 
   // Export handlers (unchanged logic)
   const handleExportCSV = () => {
-    const encodedUri = encodeURI(buildCSVContent());
+    const encodedUri = encodeURI(buildCSVContent(metrics));
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
     link.setAttribute('download', 'transitops_analytics_report.csv');
@@ -82,14 +98,14 @@ export default function Analytics() {
   const handleDownloadReport = () => {
     alert('Downloading complete system executive summary report...');
   };
-  const kpiCards = [
-    { title: 'Fleet Utilization', value: `${KPI_METRICS.fleetUtilization}%`, change: '+4%', isPositive: true, icon: TrendingUp, accent: 'purple', subtitle: 'vs last month' },
-    { title: 'Fuel Efficiency', value: KPI_METRICS.fuelEfficiency, change: '+1.2%', isPositive: true, icon: Gauge, accent: 'amber', subtitle: 'vs last month' },
-    { title: 'Operational Cost', value: KPI_METRICS.operationalCost, change: '-12%', isPositive: true, icon: DollarSign, accent: 'emerald', subtitle: 'vs last month' },
-    { title: 'Vehicle ROI', value: KPI_METRICS.roi, change: '+0.8%', isPositive: true, icon: LineChart, accent: 'blue', subtitle: 'vs last month' },
-    { title: 'Total Trips', value: KPI_METRICS.activeTrips + KPI_METRICS.pendingTrips, change: '+8%', isPositive: true, icon: Compass, accent: 'cyan', subtitle: 'active + pending' },
+  const kpiCards = metrics ? [
+    { title: 'Fleet Utilization', value: `${metrics.fleetUtilization}%`, change: '+4%', isPositive: true, icon: TrendingUp, accent: 'purple', subtitle: 'vs last month' },
+    { title: 'Fuel Efficiency', value: metrics.fuelEfficiency, change: '+1.2%', isPositive: true, icon: Gauge, accent: 'amber', subtitle: 'vs last month' },
+    { title: 'Operational Cost', value: metrics.operationalCost, change: '-12%', isPositive: true, icon: DollarSign, accent: 'emerald', subtitle: 'vs last month' },
+    { title: 'Vehicle ROI', value: metrics.roi, change: '+0.8%', isPositive: true, icon: LineChart, accent: 'blue', subtitle: 'vs last month' },
+    { title: 'Total Trips', value: metrics.activeTrips + metrics.pendingTrips, change: '+8%', isPositive: true, icon: Compass, accent: 'cyan', subtitle: 'active + pending' },
     { title: 'Revenue (MTD)', value: '₹7.2L', change: '+7.5%', isPositive: true, icon: Activity, accent: 'rose', subtitle: 'month to date' },
-  ];
+  ] : [];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '28px', fontFamily: 'Inter, sans-serif' }}>

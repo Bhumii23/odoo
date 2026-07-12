@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { initialDrivers, initialVehicles, initialTrips } from '../data';
+import { useMemo, useState, useEffect } from 'react';
+import api from '../../../lib/api';
 
 const initialFilters = {
   search: '',
@@ -10,16 +10,37 @@ const initialFilters = {
 };
 
 export function useTripDispatcher() {
-  const [trips, setTrips] = useState(initialTrips);
+  const [trips, setTrips] = useState([]);
+  const [drivers, setDrivers] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
   const [filters, setFilters] = useState(initialFilters);
+
+  const fetchAll = async () => {
+    try {
+      const [tripsRes, driversRes, vehiclesRes] = await Promise.all([
+        api.get('/trips'),
+        api.get('/drivers'),
+        api.get('/vehicles')
+      ]);
+      setTrips(tripsRes.data);
+      setDrivers(driversRes.data);
+      setVehicles(vehiclesRes.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchAll();
+  }, []);
 
   const stats = useMemo(() => {
     const activeCount = trips.filter((trip) => trip.status === 'Dispatched').length;
     const draftCount = trips.filter((trip) => trip.status === 'Draft').length;
     const completedCount = trips.filter((trip) => trip.status === 'Completed').length;
     const cancelledCount = trips.filter((trip) => trip.status === 'Cancelled').length;
-    const availableDrivers = initialDrivers.filter((driver) => driver.status === 'Available').length;
-    const availableVehicles = initialVehicles.filter((vehicle) => vehicle.status === 'Available').length;
+    const availableDrivers = drivers.filter((driver) => driver.status === 'Available').length;
+    const availableVehicles = vehicles.filter((vehicle) => vehicle.status === 'Available').length;
 
     return [
       { title: 'Active Trips', value: activeCount, detail: 'In motion now' },
@@ -45,26 +66,30 @@ export function useTripDispatcher() {
     });
   }, [filters, trips]);
 
-  const createTrip = (trip) => {
-    setTrips((current) => [
-      {
-        ...trip,
-        id: trip.id || `TRIP-${String(current.length + 100).padStart(3, '0')}`,
-      },
-      ...current,
-    ]);
+  const createTrip = async (trip) => {
+    try {
+      const res = await api.post('/trips', trip);
+      setTrips([res.data, ...trips]);
+    } catch(err) {
+      console.error(err);
+    }
   };
 
-  const updateTrip = (tripId, updates) => {
-    setTrips((current) => current.map((trip) => (trip.id === tripId ? { ...trip, ...updates } : trip)));
+  const updateTrip = async (tripId, updates) => {
+    try {
+      const res = await api.put(`/trips/${tripId}/status`, updates);
+      setTrips((current) => current.map((trip) => (trip.id === tripId ? { ...trip, ...res.data } : trip)));
+    } catch(err) {
+      console.error(err);
+    }
   };
 
-  const cancelTrip = (tripId) => {
-    updateTrip(tripId, { status: 'Cancelled' });
+  const cancelTrip = async (tripId) => {
+    await updateTrip(tripId, { status: 'CANCELLED' });
   };
 
-  const completeTrip = (tripId) => {
-    updateTrip(tripId, { status: 'Completed' });
+  const completeTrip = async (tripId) => {
+    await updateTrip(tripId, { status: 'COMPLETED' });
   };
 
   return {
@@ -77,5 +102,7 @@ export function useTripDispatcher() {
     updateTrip,
     cancelTrip,
     completeTrip,
+    drivers,
+    vehicles
   };
 }

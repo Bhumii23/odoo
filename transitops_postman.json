@@ -1,0 +1,332 @@
+{
+	"info": {
+		"_postman_id": "b3e944f2-2b73-4555-89f5-19e348981416",
+		"name": "TransitOps API",
+		"description": "Full collection of API endpoints for the TransitOps Hackathon Project.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@transitops.com\",\n    \"password\": \"securepassword\",\n    \"rememberMe\": true\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/auth/login",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "3000",
+							"path": ["api", "auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test Admin\",\n    \"email\": \"admin@transitops.com\",\n    \"password\": \"securepassword\",\n    \"role\": \"FLEET_MANAGER\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/auth/signup",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "3000",
+							"path": ["api", "auth", "signup"]
+						}
+					}
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@transitops.com\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/auth/forgot-password",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "3000",
+							"path": ["api", "auth", "forgot-password"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Vehicles",
+			"item": [
+				{
+					"name": "Get All Vehicles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/vehicles",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "3000",
+							"path": ["api", "vehicles"]
+						}
+					}
+				},
+				{
+					"name": "Create Vehicle",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"registrationNumber\": \"VAN-05\",\n    \"name\": \"Delivery Van\",\n    \"type\": \"VAN\",\n    \"maxLoadCapacity\": 500,\n    \"odometer\": 12000,\n    \"acquisitionCost\": 25000\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/vehicles",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "3000",
+							"path": ["api", "vehicles"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Drivers",
+			"item": [
+				{
+					"name": "Get All Drivers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/drivers",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "3000",
+							"path": ["api", "drivers"]
+						}
+					}
+				},
+				{
+					"name": "Create Driver",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Alex Driver\",\n    \"licenseNumber\": \"DL-12345\",\n    \"licenseCategory\": \"LMV\",\n    \"licenseExpiry\": \"2028-12-31T00:00:00.000Z\",\n    \"contactNumber\": \"555-1234\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/drivers",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "3000",
+							"path": ["api", "drivers"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Trips",
+			"item": [
+				{
+					"name": "Create Trip",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"source\": \"Warehouse A\",\n    \"destination\": \"Store B\",\n    \"vehicleId\": 1,\n    \"driverId\": 1,\n    \"cargoWeight\": 450,\n    \"plannedDistance\": 150\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/trips",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "3000",
+							"path": ["api", "trips"]
+						}
+					}
+				},
+				{
+					"name": "Update Trip Status",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"DISPATCHED\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/trips/1/status",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "3000",
+							"path": ["api", "trips", "1", "status"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "5. Maintenance",
+			"item": [
+				{
+					"name": "Create Maintenance Log",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"vehicleId\": 1,\n    \"serviceType\": \"ROUTINE_MAINTENANCE\",\n    \"description\": \"Oil Change\",\n    \"cost\": 150.00,\n    \"date\": \"2026-07-12T00:00:00.000Z\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/maintenance",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "3000",
+							"path": ["api", "maintenance"]
+						}
+					}
+				},
+				{
+					"name": "Approve Maintenance",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"APPROVED\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/maintenance/1/status",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "3000",
+							"path": ["api", "maintenance", "1", "status"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "6. Analytics & Exports",
+			"item": [
+				{
+					"name": "Dashboard Metrics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/analytics/dashboard",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "3000",
+							"path": ["api", "analytics", "dashboard"]
+						}
+					}
+				},
+				{
+					"name": "Export CSV",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/analytics/export/csv",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "3000",
+							"path": ["api", "analytics", "export", "csv"]
+						}
+					}
+				},
+				{
+					"name": "Export PDF",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/analytics/export/pdf",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "3000",
+							"path": ["api", "analytics", "export", "pdf"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"if (pm.response.code === 200 && pm.info.requestName === 'Login') {",
+					"    var jsonData = pm.response.json();",
+					"    if (jsonData.token) {",
+					"        pm.collectionVariables.set('jwt_token', jsonData.token);",
+					"    }",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

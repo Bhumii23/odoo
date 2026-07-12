@@ -7,10 +7,9 @@ import TripForm from './components/TripForm';
 import TripFilters from './components/TripFilters';
 import TripCard from './components/TripCard';
 import { useTripDispatcher } from './hooks/useTripDispatcher';
-import { initialDrivers, initialVehicles } from './data';
 
 export default function TripDispatcher({ permission }) {
-  const { stats, filteredTrips, filters, setFilters, createTrip, cancelTrip, completeTrip } = useTripDispatcher();
+  const { stats, filteredTrips, filters, setFilters, createTrip, cancelTrip, completeTrip, drivers, vehicles } = useTripDispatcher();
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [selectedTripId, setSelectedTripId] = useState(null);
 
@@ -28,14 +27,14 @@ export default function TripDispatcher({ permission }) {
       <TripStepper currentStatus="Dispatched" />
 
       {isFormVisible && permission === 'edit' ? (
-        <TripForm onSubmit={handleCreateTrip} />
+        <TripForm onSubmit={handleCreateTrip} drivers={drivers} vehicles={vehicles} />
       ) : (
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
           <TripFilters
             filters={filters}
             setFilters={setFilters}
-            drivers={initialDrivers}
-            vehicles={initialVehicles}
+            drivers={drivers}
+            vehicles={vehicles}
           />
         </motion.div>
       )}

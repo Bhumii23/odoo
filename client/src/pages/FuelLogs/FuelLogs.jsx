@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { initialFuelLogs } from '../../data/operationsData';
+import React, { useState, useEffect } from 'react';
+import api from '../../lib/api';
 import { Plus, Search, Edit2, Trash2, FileSpreadsheet, X } from 'lucide-react';
 
 // 1. FuelHeader Component
@@ -63,9 +63,9 @@ function FuelTableRow({ log, onDelete, permission }) {
       <td className="px-5 py-3.5 text-slate-500 font-medium">{log.date}</td>
       <td className="px-5 py-3.5 text-right font-semibold text-slate-600">{log.odometer}</td>
       <td className="px-5 py-3.5 text-right font-semibold text-slate-600">{log.quantity} L</td>
-      <td className="px-5 py-3.5 text-right font-bold text-slate-800">{log.cost}</td>
-      <td className="px-5 py-3.5 text-slate-500 font-medium text-xs">{log.station}</td>
-      <td className="px-5 py-3.5 text-slate-450 font-medium max-w-xs truncate">{log.remarks || '-'}</td>
+      <td className="px-5 py-3.5 text-right font-bold text-slate-800">₹ {log.cost}</td>
+      <td className="px-5 py-3.5 text-slate-500 font-medium text-xs">-</td>
+      <td className="px-5 py-3.5 text-slate-450 font-medium max-w-xs truncate">-</td>
       {permission === 'edit' && (
         <td className="px-5 py-3.5 text-center">
           <div className="flex items-center justify-center space-x-2.5">
@@ -150,9 +150,32 @@ function FuelTable({ logs, onDelete, permission }) {
 
 // 5. Main Page Component: FuelLogs
 export default function FuelLogs({ permission }) {
-  const [logs, setLogs] = useState(initialFuelLogs);
+  const [logs, setLogs] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    fetchFuelLogs();
+  }, []);
+
+  const fetchFuelLogs = async () => {
+    try {
+      const res = await api.get('/fuel');
+      const formattedLogs = res.data.map(log => ({
+        id: log.id,
+        vehicle: log.vehicle?.registrationNumber || String(log.vehicleId),
+        tripId: '-',
+        driver: '-',
+        date: new Date(log.date).toISOString().split('T')[0],
+        odometer: '-',
+        quantity: log.liters,
+        cost: log.cost
+      }));
+      setLogs(formattedLogs);
+    } catch(err) {
+      console.error(err);
+    }
+  };
 
   // Form states for Logging Fuel
   const [form, setForm] = useState({
@@ -187,28 +210,38 @@ export default function FuelLogs({ permission }) {
     document.body.removeChild(link);
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    if (!form.vehicle || !form.driver || !form.quantity || !form.cost) {
+    if (!form.vehicle || !form.quantity || !form.cost) {
       alert("Please fill in all required fields.");
       return;
     }
 
-    const newLog = {
-      id: Date.now(),
-      vehicle: form.vehicle,
-      tripId: form.tripId || 'TRIP-N/A',
-      driver: form.driver,
-      date: form.date,
-      odometer: form.odometer || '-',
-      quantity: form.quantity,
-      cost: `₹ ${Number(form.cost).toLocaleString('en-IN')}`,
-      station: form.station || '-',
-      remarks: form.remarks,
-    };
+    try {
+      const res = await api.post('/fuel', {
+        vehicleId: parseInt(form.vehicle),
+        liters: Number(form.quantity),
+        cost: Number(form.cost),
+        date: form.date ? new Date(form.date).toISOString() : undefined,
+      });
 
-    setLogs((prev) => [newLog, ...prev]);
-    setIsModalOpen(false);
+      const newLog = {
+        id: res.data.id,
+        vehicle: res.data.vehicle?.registrationNumber || String(res.data.vehicleId),
+        tripId: '-',
+        driver: '-',
+        date: new Date(res.data.date).toISOString().split('T')[0],
+        odometer: '-',
+        quantity: res.data.liters,
+        cost: res.data.cost,
+      };
+
+      setLogs((prev) => [newLog, ...prev]);
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error(err);
+      alert("Error adding fuel log.");
+    }
     // Reset form
     setForm({
       vehicle: '',
@@ -276,7 +309,7 @@ export default function FuelLogs({ permission }) {
                   <input
                     type="text"
                     required
-                    placeholder="e.g. GJ01AB4521"
+                    placeholder="e.g. 1"
                     value={form.vehicle}
                     onChange={(e) => setForm({...form, vehicle: e.target.value})}
                     className="bg-slate-50 border border-slate-100 text-slate-700 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-purple-300 focus:bg-white transition-all font-semibold"

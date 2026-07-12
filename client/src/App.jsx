@@ -26,10 +26,7 @@ import {
 import { permissions } from './config/permissions';
 import AccessDenied from './components/AccessDenied';
 
-const user = {
-  name: "John",
-  role: "DISPATCHER"
-};
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 const tabToPermissionKey = {
   'dashboard': 'dashboard',
@@ -43,6 +40,7 @@ const tabToPermissionKey = {
 };
 
 function DashboardView() {
+  const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('analytics');
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -134,6 +132,10 @@ function DashboardView() {
 
   // Content Renderer based on selected Tab
   const renderContent = () => {
+    if (!user) {
+      return <Navigate to="/auth" replace />;
+    }
+
     const permKey = tabToPermissionKey[activeTab];
     const userPermission = permissions[user.role]?.[permKey] || 'none';
 
@@ -431,13 +433,15 @@ function DashboardView() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<WelcomeScreen />} />
-        <Route path="/auth" element={<AuthLayout />} />
-        <Route path="/dashboard" element={<DashboardView />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<WelcomeScreen />} />
+          <Route path="/auth" element={<AuthLayout />} />
+          <Route path="/dashboard" element={<DashboardView />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
