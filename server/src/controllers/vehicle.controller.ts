@@ -67,7 +67,8 @@ export const createVehicle = asyncHandler(async (req: Request, res: Response) =>
     res.status(201).json(vehicle);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      res.status(400).json({ error: error.issues[0].message, field: String(error.issues[0].path[0]) });
+      const firstIssue = error.issues[0];
+      res.status(400).json({ error: firstIssue?.message, field: String(firstIssue?.path[0]) });
       return;
     }
     throw error;
@@ -124,7 +125,8 @@ export const updateVehicle = asyncHandler(async (req: Request, res: Response) =>
     res.status(200).json(updatedVehicle);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      res.status(400).json({ error: error.issues[0].message, field: String(error.issues[0].path[0]) });
+      const firstIssue = error.issues[0];
+      res.status(400).json({ error: firstIssue?.message, field: String(firstIssue?.path[0]) });
       return;
     }
     throw error;

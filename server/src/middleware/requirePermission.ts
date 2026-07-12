@@ -14,7 +14,7 @@ const loadPermissions = async () => {
     if (!cache[p.role]) {
       cache[p.role] = {};
     }
-    cache[p.role][p.module] = p.access;
+    cache[p.role]![p.module] = p.access;
   }
   
   permissionCache = cache;
