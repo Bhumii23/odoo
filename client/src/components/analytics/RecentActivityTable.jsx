@@ -19,9 +19,9 @@ export default function RecentActivityTable() {
   };
 
   return (
-    <div className="bg-[#1E293B] border border-slate-800/80 rounded-lg overflow-hidden">
-      <div className="px-5 py-4 border-b border-slate-800/80">
-        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider text-left">
+    <div className="bg-[#fcf8f3]/90 border border-[#e9dfd7] rounded-[24px] overflow-hidden shadow-[0_16px_44px_-24px_rgba(76,54,97,0.28)] backdrop-blur">
+      <div className="px-5 py-4 border-b border-[#e9dfd7]">
+        <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider text-left">
           Recent Trip Activity Log
         </h3>
       </div>

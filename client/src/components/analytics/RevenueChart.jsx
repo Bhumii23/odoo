@@ -21,8 +21,8 @@ export default function RevenueChart() {
   };
 
   return (
-    <div className="bg-[#1E293B] border border-slate-800/80 p-5 rounded-lg text-left h-[320px] flex flex-col">
-      <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4 shrink-0">
+    <div className="bg-[#fcf8f3]/90 border border-[#e9dfd7] p-5 rounded-[24px] text-left h-[320px] flex flex-col shadow-[0_16px_44px_-24px_rgba(76,54,97,0.28)] backdrop-blur">
+      <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 shrink-0">
         Revenue vs Expense Compare
       </h3>
       <div className="flex-1 w-full min-h-0">
