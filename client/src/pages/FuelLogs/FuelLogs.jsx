@@ -3,7 +3,7 @@ import { initialFuelLogs } from '../../data/operationsData';
 import { Plus, Search, Edit2, Trash2, FileSpreadsheet, X } from 'lucide-react';
 
 // 1. FuelHeader Component
-function FuelHeader({ onLogClick, onExportClick }) {
+function FuelHeader({ onLogClick, onExportClick, permission }) {
   return (
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 rounded-[28px] border border-[#e9dfd7] bg-[#fcf8f3]/90 p-5 shadow-[0_20px_60px_-30px_rgba(76,54,97,0.32)] backdrop-blur">
       <div>
@@ -21,13 +21,15 @@ function FuelHeader({ onLogClick, onExportClick }) {
           <FileSpreadsheet size={13} />
           <span>Export CSV</span>
         </button>
-        <button
-          onClick={onLogClick}
-          className="flex items-center space-x-1.5 bg-[#7c5a9f] hover:bg-[#5e3d75] text-white px-3.5 py-1.5 rounded-2xl text-xs font-semibold transition-colors cursor-pointer shadow-sm"
-        >
-          <Plus size={13} />
-          <span>Log Fuel</span>
-        </button>
+        {permission === 'edit' && (
+          <button
+            onClick={onLogClick}
+            className="flex items-center space-x-1.5 bg-[#7c5a9f] hover:bg-[#5e3d75] text-white px-3.5 py-1.5 rounded-2xl text-xs font-semibold transition-colors cursor-pointer shadow-sm"
+          >
+            <Plus size={13} />
+            <span>Log Fuel</span>
+          </button>
+        )}
       </div>
     </div>
   );
@@ -52,7 +54,7 @@ function FuelSearch({ value, onChange }) {
 }
 
 // 3. FuelTableRow Component
-function FuelTableRow({ log, onDelete }) {
+function FuelTableRow({ log, onDelete, permission }) {
   return (
     <tr className="hover:bg-slate-800/30 transition-colors duration-100">
       <td className="px-5 py-3.5 font-mono text-slate-200 font-medium">{log.vehicle}</td>
@@ -64,30 +66,32 @@ function FuelTableRow({ log, onDelete }) {
       <td className="px-5 py-3.5 text-right font-semibold text-slate-200">{log.cost}</td>
       <td className="px-5 py-3.5 text-slate-400 text-sm">{log.station}</td>
       <td className="px-5 py-3.5 text-slate-500 max-w-xs truncate">{log.remarks || '-'}</td>
-      <td className="px-5 py-3.5 text-center">
-        <div className="flex items-center justify-center space-x-2">
-          <button 
-            onClick={() => alert(`Edit Fuel Entry for ${log.vehicle}`)}
-            className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
-            title="Edit Log"
-          >
-            <Edit2 size={12} />
-          </button>
-          <button 
-            onClick={() => onDelete(log.id)}
-            className="p-1 rounded hover:bg-rose-950/40 text-slate-400 hover:text-rose-400 transition-colors cursor-pointer"
-            title="Delete Log"
-          >
-            <Trash2 size={12} />
-          </button>
-        </div>
-      </td>
+      {permission === 'edit' && (
+        <td className="px-5 py-3.5 text-center">
+          <div className="flex items-center justify-center space-x-2">
+            <button 
+              onClick={() => alert(`Edit Fuel Entry for ${log.vehicle}`)}
+              className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              title="Edit Log"
+            >
+              <Edit2 size={12} />
+            </button>
+            <button 
+              onClick={() => onDelete(log.id)}
+              className="p-1 rounded hover:bg-rose-950/40 text-slate-400 hover:text-rose-400 transition-colors cursor-pointer"
+              title="Delete Log"
+            >
+              <Trash2 size={12} />
+            </button>
+          </div>
+        </td>
+      )}
     </tr>
   );
 }
 
 // 4. FuelTable Component
-function FuelTable({ logs, onDelete }) {
+function FuelTable({ logs, onDelete, permission }) {
   return (
     <div className="bg-[#fcf8f3]/90 border border-[#e9dfd7] rounded-[24px] overflow-hidden shadow-[0_12px_40px_-20px_rgba(76,54,97,0.22)] backdrop-blur">
       <div className="overflow-x-auto">
@@ -103,13 +107,13 @@ function FuelTable({ logs, onDelete }) {
               <th className="px-5 py-3 text-right">Fuel Cost</th>
               <th className="px-5 py-3">Fuel Station</th>
               <th className="px-5 py-3">Remarks</th>
-              <th className="px-5 py-3 text-center">Actions</th>
+              {permission === 'edit' && <th className="px-5 py-3 text-center">Actions</th>}
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800/50 text-xs text-slate-300">
             {logs.length > 0 ? (
               logs.map((log) => (
-                <FuelTableRow key={log.id} log={log} onDelete={onDelete} />
+                <FuelTableRow key={log.id} log={log} onDelete={onDelete} permission={permission} />
               ))
             ) : (
               <tr>
@@ -145,7 +149,7 @@ function FuelTable({ logs, onDelete }) {
 }
 
 // 5. Main Page Component: FuelLogs
-export default function FuelLogs() {
+export default function FuelLogs({ permission }) {
   const [logs, setLogs] = useState(initialFuelLogs);
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -232,6 +236,7 @@ export default function FuelLogs() {
       <FuelHeader 
         onLogClick={() => setIsModalOpen(true)} 
         onExportClick={handleExportCSV} 
+        permission={permission}
       />
 
       <FuelSearch 
@@ -242,10 +247,11 @@ export default function FuelLogs() {
       <FuelTable 
         logs={filteredLogs} 
         onDelete={handleDelete} 
+        permission={permission}
       />
 
       {/* Log Fuel Modal (Hackathon Dialog Overlay) */}
-      {isModalOpen && (
+      {isModalOpen && permission === 'edit' && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
           <div className="bg-[#1E293B] border border-slate-800 rounded-lg max-w-lg w-full overflow-hidden shadow-2xl flex flex-col">
             

@@ -7,9 +7,9 @@ export interface JwtPayload {
   role: string;
 }
 
-export const signToken = (payload: JwtPayload): string => {
+export const signToken = (payload: JwtPayload, expiresIn: any = '8h'): string => {
   return jwt.sign(payload, JWT_SECRET, {
-    expiresIn: '8h',
+    expiresIn,
   });
 };
 

@@ -9,8 +9,10 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
+import crypto from 'crypto';
 import { prisma } from '../lib/prisma';
 import { signToken } from '../lib/jwt';
+import { sendPasswordResetEmail } from '../lib/mailer';
 import { SignupSchema, LoginSchema } from '../../../shared/schemas/auth.schema';
 import { Role } from '@prisma/client';
 
@@ -120,7 +122,8 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
       }
     });
 
-    const token = signToken({ userId: updatedUser.id, role: updatedUser.role });
+    const expiresIn = data.rememberMe ? '30d' : '8h';
+    const token = signToken({ userId: updatedUser.id, role: updatedUser.role }, expiresIn);
 
     res.status(200).json({ user: updatedUser, token });
   } catch (error) {
@@ -169,19 +172,90 @@ export const getMe = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const forgotPassword = asyncHandler(async (req: Request, res: Response) => {
-  /*
-    STUB ONLY for hackathon scope.
-    Validates email format, but does not send an actual email or generate a reset token.
-  */
   try {
     const emailSchema = z.object({ email: z.string().email('Invalid email address') });
     const { email } = emailSchema.parse(req.body);
 
     const user = await prisma.user.findUnique({ where: { email } });
     
+    if (user) {
+      // Generate a secure 64-character hex token
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      
+      // Hash it before storing in the database for security (in case DB leaks)
+      const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+      
+      // Set expiration to 1 hour from now
+      const tokenExpiry = new Date(Date.now() + 60 * 60 * 1000);
+
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          resetToken: hashedToken,
+          resetTokenExpiry: tokenExpiry
+        }
+      });
+
+      // Send the raw token via email (so the user has the unhashed version in their URL)
+      await sendPasswordResetEmail(user.email, resetToken);
+    }
+    
     // We intentionally return the same message regardless of whether the email exists
     // to prevent email enumeration.
     res.status(200).json({ message: 'If this email exists, a reset link has been sent' });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const firstIssue = error.issues[0];
+      res.status(400).json({ error: firstIssue?.message, field: String(firstIssue?.path[0]) });
+      return;
+    }
+    throw error;
+  }
+});
+
+export const resetPassword = asyncHandler(async (req: Request, res: Response) => {
+  try {
+    const resetSchema = z.object({
+      token: z.string().min(1, 'Token is required'),
+      newPassword: z.string().min(8, 'Password must be at least 8 characters long')
+    });
+    
+    const { token, newPassword } = resetSchema.parse(req.body);
+
+    // Hash the incoming token so we can compare it to the hashed version in the DB
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+    const user = await prisma.user.findFirst({
+      where: {
+        resetToken: hashedToken,
+        resetTokenExpiry: {
+          gt: new Date() // Token must not be expired (expiry > right now)
+        }
+      }
+    });
+
+    if (!user) {
+      res.status(400).json({ error: 'Token is invalid or has expired' });
+      return;
+    }
+
+    // Hash the new password
+    const newPasswordHash = await bcrypt.hash(newPassword, 10);
+
+    // Update password and clear the reset token fields
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        passwordHash: newPasswordHash,
+        resetToken: null,
+        resetTokenExpiry: null,
+        // Optional: unlock account if they successfully reset password
+        failedLoginAttempts: 0,
+        isLocked: false
+      }
+    });
+
+    res.status(200).json({ message: 'Password has been successfully reset' });
   } catch (error) {
     if (error instanceof z.ZodError) {
       const firstIssue = error.issues[0];

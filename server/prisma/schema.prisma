@@ -15,6 +15,8 @@ model User {
   role                Role
   failedLoginAttempts Int      @default(0)
   isLocked            Boolean  @default(false)
+  resetToken          String?
+  resetTokenExpiry    DateTime?
   createdAt           DateTime @default(now())
 }
 
@@ -57,9 +59,11 @@ model Vehicle {
   type               String
   maxLoadCapacity    Float
   odometer           Float
-  acquisitionCost    Float
-  status             VehicleStatus
-  createdAt          DateTime          @default(now())
+  acquisitionCost         Float
+  status                  VehicleStatus
+  maintenanceInterval     Float             @default(10000.0)
+  lastMaintenanceOdometer Float             @default(0.0)
+  createdAt               DateTime          @default(now())
 
   trips              Trip[]
   maintenanceLogs    MaintenanceLog[]
@@ -86,6 +90,7 @@ model Driver {
   createdAt       DateTime     @default(now())
 
   trips           Trip[]
+  maintenanceLogs MaintenanceLog[]
 }
 
 enum DriverStatus {
@@ -104,6 +109,7 @@ model Trip {
   cargoWeight      Float
   plannedDistance  Float
   status           TripStatus
+  revenue          Float?
   createdAt        DateTime   @default(now())
   completedAt      DateTime?
 
@@ -122,17 +128,23 @@ enum TripStatus {
 model MaintenanceLog {
   id          Int               @id @default(autoincrement())
   vehicleId   Int
+  driverId    Int?
   serviceType ServiceCategory
+  description String?
   cost        Float
   date        DateTime
   status      MaintenanceStatus
 
   vehicle     Vehicle           @relation(fields: [vehicleId], references: [id])
+  driver      Driver?           @relation(fields: [driverId], references: [id])
 }
 
 enum MaintenanceStatus {
-  ACTIVE
+  PENDING_APPROVAL
+  APPROVED
+  IN_PROGRESS
   COMPLETED
+  REJECTED
 }
 
 enum ServiceCategory {
