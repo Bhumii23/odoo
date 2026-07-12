@@ -4,13 +4,13 @@ import { motion } from 'framer-motion';
 import WelcomeScreen from './components/WelcomeScreen';
 import AuthLayout from './components/AuthLayout';
 import DashboardLayout from './layouts/DashboardLayout';
-import Analytics from './pages/Analytics/Analytics';
+import Analytics from './pages/analytics/Analytics';
 import FuelLogs from './pages/FuelLogs/FuelLogs';
 import Expenses from './pages/Expenses/Expenses';
 import DriverManagement from './pages/DriverManagement/DriverManagement';
 import TripDispatcher from './pages/TripDispatcher/TripDispatcher';
-import Maintenance from './pages/Maintenance/Maintenance';
-import Settings from './pages/Settings/Settings';
+import Maintenance from './pages/maintenance/Maintenance';
+import Settings from './pages/settings/Settings';
 import { 
   Plus, 
   Search, 
