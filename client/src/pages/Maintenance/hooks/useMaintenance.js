@@ -31,7 +31,7 @@ export function useMaintenance() {
   }, []);
 
   const stats = useMemo(() => {
-    const inShop = vehicles.filter((vehicle) => vehicle.status === 'IN_SHOP').length;
+    const inShop = vehicles.filter((vehicle) => vehicle.status === 'IN_SHOP' || vehicle.status === 'In Shop').length;
     const upcoming = serviceHistory.filter((record) => record.status === 'PENDING_APPROVAL' || record.status === 'IN_PROGRESS').length;
     const completed = serviceHistory.filter((record) => record.status === 'COMPLETED').length;
     const averageCost = serviceHistory.length
@@ -70,7 +70,7 @@ export function useMaintenance() {
         date: new Date().toISOString(),
       });
       setServiceHistory([res.data, ...serviceHistory]);
-      setVehicles((current) => current.map((v) => (v.id === payload.vehicleId ? { ...v, status: 'In Shop' } : v)));
+      setVehicles((current) => current.map((v) => (v.id === payload.vehicleId ? { ...v, status: 'IN_SHOP' } : v)));
     } catch (err) {
       console.error(err);
     }
@@ -78,7 +78,7 @@ export function useMaintenance() {
 
   const completeMaintenance = async (serviceId) => {
     try {
-      const res = await api.put(`/maintenance/${serviceId}/status`, { status: 'COMPLETED' });
+      const res = await api.patch(`/maintenance/${serviceId}/status`, { status: 'COMPLETED' });
       setServiceHistory((current) =>
         current.map((record) =>
           record.id === serviceId
@@ -90,6 +90,8 @@ export function useMaintenance() {
         setVehicles((current) =>
           current.map((vehicle) => (vehicle.id === res.data.vehicleId ? { ...vehicle, status: 'AVAILABLE' } : vehicle))
         );
+        // Refresh full list from server to get latest status
+        fetchAll();
       }
     } catch (err) {
       console.error(err);

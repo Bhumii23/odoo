@@ -92,11 +92,42 @@ export default function Analytics() {
   };
 
   const handleExportPDF = () => {
-    alert('Exporting PDF report... (PDF generation logic triggers here)');
+    const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    const token = localStorage.getItem('token');
+    // Open in new tab — browser handles the PDF download from the streaming endpoint
+    const url = `${apiBase}/api/analytics/export/pdf`;
+    // Use fetch to attach the auth header, then create a blob URL
+    fetch(url, { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => res.blob())
+      .then((blob) => {
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = 'transitops_report.pdf';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(blobUrl);
+      })
+      .catch(() => alert('PDF export failed. Please try again.'));
   };
 
   const handleDownloadReport = () => {
-    alert('Downloading complete system executive summary report...');
+    const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    const token = localStorage.getItem('token');
+    fetch(`${apiBase}/api/analytics/export/csv`, { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => res.blob())
+      .then((blob) => {
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = 'transitops_vehicles.csv';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(blobUrl);
+      })
+      .catch(() => alert('Export failed. Please try again.'));
   };
   const kpiCards = metrics ? [
     { title: 'Fleet Utilization', value: `${metrics.fleetUtilization}%`, change: '+4%', isPositive: true, icon: TrendingUp, accent: 'purple', subtitle: 'vs last month' },

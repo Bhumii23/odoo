@@ -18,7 +18,10 @@ export default function MaintenanceForm({ vehicles, onSubmit }) {
   const [form, setForm] = useState(emptyForm);
   const [warning, setWarning] = useState('');
 
-  const availableVehicles = useMemo(() => vehicles.filter((vehicle) => vehicle.status === 'Available'), [vehicles]);
+  const availableVehicles = useMemo(
+    () => vehicles.filter((vehicle) => vehicle.status === 'AVAILABLE' || vehicle.status === 'Available'),
+    [vehicles]
+  );
 
   const handleSubmit = (event) => {
     event.preventDefault();
