@@ -1,6 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 
 /**
+ * @deprecated This simple role-based authorize middleware is deprecated.
+ * Please use requirePermission(module, accessLevel) from './requirePermission.ts' instead,
+ * which implements the new matrix-driven RBAC system.
+ */
+
+/**
  * Middleware factory to authorize specific roles.
  * Usage: router.get('/some-route', authenticate, authorize(['FLEET_MANAGER']), handler);
  */
