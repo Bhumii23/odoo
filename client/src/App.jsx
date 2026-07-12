@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import DashboardLayout from './layouts/DashboardLayout';
 import Analytics from './pages/Analytics/Analytics';
+import FuelLogs from './pages/FuelLogs/FuelLogs';
+import Expenses from './pages/Expenses/Expenses';
 import { 
   Plus, 
   Search, 
@@ -8,8 +10,11 @@ import {
 } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('analytics'); // Set Default tab to Analytics to showcase the new feature
+  const [activeTab, setActiveTab] = useState('analytics');
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  // Sub-Tab selection state for "Fuel & Expenses" group
+  const [fuelExpensesSubTab, setFuelExpensesSubTab] = useState('fuel'); // 'fuel' or 'expenses'
 
   // States for Fleet Page Filters
   const [typeFilter, setTypeFilter] = useState('All');
@@ -99,6 +104,38 @@ export default function App() {
     switch (activeTab) {
       case 'analytics':
         return <Analytics />;
+
+      case 'fuel-expenses':
+        return (
+          <div className="space-y-6">
+            {/* Sub-Tabs Switcher */}
+            <div className="border-b border-slate-800 pb-px flex space-x-6 text-xs font-semibold mb-4">
+              <button
+                onClick={() => setFuelExpensesSubTab('fuel')}
+                className={`pb-3 relative transition-colors duration-150 cursor-pointer ${
+                  fuelExpensesSubTab === 'fuel' 
+                    ? 'text-[#714B67] border-b-2 border-[#714B67]' 
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Fuel Logs
+              </button>
+              <button
+                onClick={() => setFuelExpensesSubTab('expenses')}
+                className={`pb-3 relative transition-colors duration-150 cursor-pointer ${
+                  fuelExpensesSubTab === 'expenses' 
+                    ? 'text-[#714B67] border-b-2 border-[#714B67]' 
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                Expenses
+              </button>
+            </div>
+
+            {/* Sub-Tab Page View */}
+            {fuelExpensesSubTab === 'fuel' ? <FuelLogs /> : <Expenses />}
+          </div>
+        );
 
       case 'dashboard':
         return (
