@@ -122,7 +122,7 @@ enum TripStatus {
 model MaintenanceLog {
   id          Int               @id @default(autoincrement())
   vehicleId   Int
-  serviceType String
+  serviceType ServiceCategory
   cost        Float
   date        DateTime
   status      MaintenanceStatus
@@ -133,6 +133,12 @@ model MaintenanceLog {
 enum MaintenanceStatus {
   ACTIVE
   COMPLETED
+}
+
+enum ServiceCategory {
+  ROUTINE_MAINTENANCE
+  MECHANICAL_FAILURE
+  ACCIDENT_DAMAGE
 }
 
 model FuelLog {
