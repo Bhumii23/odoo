@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Building, Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle2 } from 'lucide-react';
+import api from '../lib/api';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function SignupForm({ onSwitchTab, onSubmitSuccess }) {
+  const { login } = useAuth();
   const [fullName, setFullName] = useState('');
   const [organization, setOrganization] = useState('');
   const [email, setEmail] = useState('');
@@ -56,23 +59,34 @@ export default function SignupForm({ onSwitchTab, onSubmitSuccess }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsSubmitting(true);
     setErrors({});
 
-    // Mock API signup
-    setTimeout(() => {
+    try {
+      const res = await api.post('/auth/register', {
+        email,
+        password,
+        name: fullName,
+        role: 'FLEET_MANAGER', // Defaulting to Admin for signups via UI
+      });
+      
+      // Auto-login after successful registration
+      login(res.data.token, res.data.user);
+      
       setIsSubmitting(false);
       setIsSuccess(true);
-
-      // Delay before redirecting to dashboard
+      
       setTimeout(() => {
         onSubmitSuccess();
       }, 1000);
-    }, 1500);
+    } catch (err) {
+      setIsSubmitting(false);
+      setErrors({ email: err.response?.data?.error || 'Registration failed.' });
+    }
   };
 
   return (
