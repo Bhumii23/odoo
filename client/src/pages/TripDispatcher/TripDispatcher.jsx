@@ -9,7 +9,7 @@ import TripCard from './components/TripCard';
 import { useTripDispatcher } from './hooks/useTripDispatcher';
 import { initialDrivers, initialVehicles } from './data';
 
-export default function TripDispatcher() {
+export default function TripDispatcher({ permission }) {
   const { stats, filteredTrips, filters, setFilters, createTrip, cancelTrip, completeTrip } = useTripDispatcher();
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [selectedTripId, setSelectedTripId] = useState(null);
@@ -21,13 +21,13 @@ export default function TripDispatcher() {
 
   return (
     <div className="space-y-6">
-      <TripHeader onCreateTrip={() => setIsFormVisible((value) => !value)} />
+      <TripHeader onCreateTrip={() => setIsFormVisible((value) => !value)} permission={permission} />
 
       <TripStats stats={stats} />
 
       <TripStepper currentStatus="Dispatched" />
 
-      {isFormVisible ? (
+      {isFormVisible && permission === 'edit' ? (
         <TripForm onSubmit={handleCreateTrip} />
       ) : (
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
@@ -57,6 +57,7 @@ export default function TripDispatcher() {
                   onEdit={() => setSelectedTripId(trip.id)}
                   onCancel={() => cancelTrip(trip.id)}
                   onComplete={() => completeTrip(trip.id)}
+                  permission={permission}
                 />
               ))
             ) : (

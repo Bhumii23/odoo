@@ -12,6 +12,24 @@ import {
   Search, 
   ShieldAlert
 } from 'lucide-react';
+import { permissions } from './config/permissions';
+import AccessDenied from './components/AccessDenied';
+
+const user = {
+  name: "John",
+  role: "DISPATCHER"
+};
+
+const tabToPermissionKey = {
+  'dashboard': 'dashboard',
+  'fleet': 'fleet',
+  'drivers': 'drivers',
+  'trips': 'trips',
+  'maintenance': 'maintenance',
+  'fuel-expenses': 'fuelExpenses',
+  'analytics': 'analytics',
+  'settings': 'settings'
+};
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('analytics');
@@ -105,6 +123,13 @@ export default function App() {
 
   // Content Renderer based on selected Tab
   const renderContent = () => {
+    const permKey = tabToPermissionKey[activeTab];
+    const userPermission = permissions[user.role]?.[permKey] || 'none';
+
+    if (userPermission === 'none') {
+      return <AccessDenied />;
+    }
+
     switch (activeTab) {
       case 'analytics':
         return <Analytics />;
@@ -113,7 +138,7 @@ export default function App() {
         return <DriverManagement />;
 
       case 'trips':
-        return <TripDispatcher />;
+        return <TripDispatcher permission={userPermission} />;
 
       case 'maintenance':
         return <Maintenance />;
@@ -149,7 +174,11 @@ export default function App() {
             </div>
 
             {/* Sub-Tab Page View */}
-            {fuelExpensesSubTab === 'fuel' ? <FuelLogs /> : <Expenses />}
+            {fuelExpensesSubTab === 'fuel' ? (
+              <FuelLogs permission={userPermission} />
+            ) : (
+              <Expenses permission={userPermission} />
+            )}
           </div>
         );
 
@@ -240,13 +269,15 @@ export default function App() {
               </div>
 
               {/* Add Vehicle Button */}
-              <button
-                onClick={handleAddVehicle}
-                className="w-full sm:w-auto flex items-center justify-center space-x-1.5 bg-[#714B67] hover:bg-[#4a3048] text-white px-3 py-1.5 rounded text-xs font-semibold transition-all duration-200 cursor-pointer self-end"
-              >
-                <Plus size={14} />
-                <span>Add Vehicle</span>
-              </button>
+              {permissions[user.role]?.['fleet'] === 'edit' && (
+                <button
+                  onClick={handleAddVehicle}
+                  className="w-full sm:w-auto flex items-center justify-center space-x-1.5 bg-[#714B67] hover:bg-[#4a3048] text-white px-3 py-1.5 rounded text-xs font-semibold transition-all duration-200 cursor-pointer self-end"
+                >
+                  <Plus size={14} />
+                  <span>Add Vehicle</span>
+                </button>
+              )}
             </div>
 
             {/* Fleet Table Area - Simple Grid */}
@@ -262,6 +293,7 @@ export default function App() {
                       <th className="px-5 py-3">Odometer</th>
                       <th className="px-5 py-3">Acq. Cost</th>
                       <th className="px-5 py-3">Status</th>
+                      {permissions[user.role]?.['fleet'] === 'edit' && <th className="px-5 py-3 text-right">Actions</th>}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800/50 text-xs text-slate-300">
@@ -284,11 +316,29 @@ export default function App() {
                               {vehicle.status}
                             </span>
                           </td>
+                          {permissions[user.role]?.['fleet'] === 'edit' && (
+                            <td className="px-5 py-3 text-right">
+                              <div className="flex justify-end space-x-2">
+                                <button
+                                  onClick={() => alert(`Edit vehicle ${vehicle.name}`)}
+                                  className="text-slate-400 hover:text-white mr-2"
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  onClick={() => alert(`Delete vehicle ${vehicle.name}`)}
+                                  className="text-slate-400 hover:text-rose-450"
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </td>
+                          )}
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td colSpan="7" className="px-5 py-8 text-center text-slate-500">
+                        <td colSpan={permissions[user.role]?.['fleet'] === 'edit' ? "8" : "7"} className="px-5 py-8 text-center text-slate-500">
                           No matching vehicles found.
                         </td>
                       </tr>
@@ -340,6 +390,7 @@ export default function App() {
       setActiveTab={setActiveTab}
       isCollapsed={isCollapsed}
       setIsCollapsed={setIsCollapsed}
+      user={user}
     >
       {renderContent()}
     </DashboardLayout>
