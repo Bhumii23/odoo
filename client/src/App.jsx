@@ -3,6 +3,7 @@ import DashboardLayout from './layouts/DashboardLayout';
 import Analytics from './pages/Analytics/Analytics';
 import FuelLogs from './pages/FuelLogs/FuelLogs';
 import Expenses from './pages/Expenses/Expenses';
+import DriverManagement from './pages/DriverManagement/DriverManagement';
 import { 
   Plus, 
   Search, 
@@ -104,6 +105,9 @@ export default function App() {
     switch (activeTab) {
       case 'analytics':
         return <Analytics />;
+
+      case 'drivers':
+        return <DriverManagement />;
 
       case 'fuel-expenses':
         return (
