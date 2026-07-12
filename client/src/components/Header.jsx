@@ -4,48 +4,49 @@ import { Search, Bell, Sparkles } from 'lucide-react';
 export default function Header({ activeTab }) {
   const getPageTitle = (tab) => {
     if (!tab) return 'Dashboard';
+    if (tab === 'fuel-expenses') return 'Fuel & Expenses';
     return tab
       .split('-')
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' & ');
+      .join(' ');
   };
 
   return (
-    <header className="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-[#ece7ef] bg-white/80 px-4 py-4 backdrop-blur-xl sm:px-6">
+    <header className="z-20 flex items-center justify-between gap-4 border border-slate-100/80 bg-white/95 px-6 py-3.5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.015)] backdrop-blur">
       <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#7c3aed] to-[#a78bfa] text-white shadow-lg shadow-purple-200">
-          <Sparkles size={16} />
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#7c5a9f] to-[#5e3d75] text-white shadow-md shadow-purple-100">
+          <Sparkles size={14} />
         </div>
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-slate-400">Operations</p>
-          <h2 className="text-base font-semibold text-slate-900">{getPageTitle(activeTab)}</h2>
+          <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400">Operations</p>
+          <h2 className="text-sm font-bold text-slate-800 tracking-tight leading-tight">{getPageTitle(activeTab)}</h2>
         </div>
       </div>
 
-      <div className="hidden flex-1 max-w-xl items-center justify-center md:flex">
-        <label className="flex w-full max-w-lg items-center gap-3 rounded-full border border-[#ece7ef] bg-[#f9f7fb] px-4 py-2.5 shadow-[0_8px_24px_-18px_rgba(15,23,42,0.25)]">
-          <Search className="h-4 w-4 text-slate-400" />
+      <div className="hidden flex-1 max-w-md items-center justify-center md:flex mx-auto">
+        <label className="flex w-full items-center gap-2.5 rounded-xl border border-slate-100 bg-slate-50/50 px-3.5 py-1.5 focus-within:border-slate-350 focus-within:bg-white transition-all duration-200">
+          <Search className="h-3.5 w-3.5 text-slate-400 shrink-0" />
           <input
             type="text"
-            placeholder="Search operations, drivers, vehicles"
-            className="w-full border-none bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
+            placeholder="Search operations, drivers, vehicles..."
+            className="w-full border-none bg-transparent text-xs text-slate-700 outline-none placeholder:text-slate-400"
           />
         </label>
       </div>
 
-      <div className="flex items-center gap-2 sm:gap-3">
-        <button className="relative rounded-full border border-[#ece7ef] bg-white p-2.5 text-slate-500 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:text-[#6d28d9]">
-          <Bell size={18} />
-          <span className="absolute right-1.5 top-1.5 h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-white" />
+      <div className="flex items-center gap-3">
+        <button className="relative rounded-xl border border-slate-100 bg-slate-50/30 p-2 text-slate-450 hover:text-[#7c5a9f] transition-all hover:bg-slate-50">
+          <Bell size={16} />
+          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white" />
         </button>
 
-        <div className="flex items-center gap-3 rounded-full border border-[#ece7ef] bg-white px-2 py-2 pr-3 shadow-sm">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#ede9fe] to-[#f5f3ff] text-sm font-semibold text-[#6d28d9]">
+        <div className="flex items-center gap-2.5 rounded-xl border border-slate-100 bg-slate-50/20 px-2.5 py-1.5 pr-3">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-[#f4eaff] to-[#efe7ff] text-[10px] font-bold text-[#7c5a9f]">
             RK
           </div>
-          <div className="hidden sm:block">
-            <p className="text-sm font-semibold text-slate-900">Raven K.</p>
-            <p className="text-xs text-slate-500">Dispatcher</p>
+          <div className="hidden sm:block text-left">
+            <p className="text-[11px] font-bold text-slate-700 leading-none">Raven K.</p>
+            <p className="text-[9px] text-slate-400 mt-0.5 leading-none">Dispatcher</p>
           </div>
         </div>
       </div>

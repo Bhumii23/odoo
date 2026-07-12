@@ -5,10 +5,10 @@ import { Plus, Search, Edit2, Trash2, FileSpreadsheet, X } from 'lucide-react';
 // 1. ExpenseHeader Component
 function ExpenseHeader({ onAddClick, onExportClick, permission }) {
   return (
-    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 rounded-[28px] border border-[#e9dfd7] bg-[#fcf8f3]/90 p-5 shadow-[0_20px_60px_-30px_rgba(76,54,97,0.32)] backdrop-blur">
+    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 rounded-2xl border border-slate-100 bg-white p-5 shadow-[0_8px_30px_rgb(0,0,0,0.012)] text-left">
       <div>
-        <h1 className="text-xl font-semibold tracking-tight text-slate-800">Expenses</h1>
-        <p className="text-xs text-slate-500 mt-1">
+        <h1 className="text-sm font-bold text-slate-800 tracking-tight">Operational Expenses</h1>
+        <p className="text-xs text-slate-450 mt-1 font-semibold">
           Manage operational costs, highway tolls, penalties, and driver allowances.
         </p>
       </div>
@@ -16,7 +16,7 @@ function ExpenseHeader({ onAddClick, onExportClick, permission }) {
       <div className="flex items-center space-x-2">
         <button
           onClick={onExportClick}
-          className="flex items-center space-x-1.5 bg-white/80 hover:bg-[#f4ecf8] text-slate-700 border border-[#e7d9e8] hover:text-[#5e3d75] px-3 py-1.5 rounded-2xl text-xs font-semibold transition-colors cursor-pointer shadow-sm"
+          className="flex items-center space-x-1.5 bg-white border border-slate-100 text-slate-500 hover:text-slate-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer shadow-sm"
         >
           <FileSpreadsheet size={13} />
           <span>Export CSV</span>
@@ -24,7 +24,7 @@ function ExpenseHeader({ onAddClick, onExportClick, permission }) {
         {permission === 'edit' && (
           <button
             onClick={onAddClick}
-            className="flex items-center space-x-1.5 bg-[#7c5a9f] hover:bg-[#5e3d75] text-white px-3.5 py-1.5 rounded-2xl text-xs font-semibold transition-colors cursor-pointer shadow-sm"
+            className="flex items-center space-x-1.5 bg-gradient-to-r from-[#7c5a9f] to-[#5e3d75] hover:opacity-95 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md shadow-purple-100 transition-all hover:-translate-y-0.5 cursor-pointer"
           >
             <Plus size={13} />
             <span>Add Expense</span>
@@ -38,15 +38,15 @@ function ExpenseHeader({ onAddClick, onExportClick, permission }) {
 // 2. ExpenseSearch Component
 function ExpenseSearch({ value, onChange }) {
   return (
-    <div className="bg-[#fcf8f3]/90 p-4 border border-[#e9dfd7] rounded-[22px] flex items-center justify-between mb-4 shadow-sm backdrop-blur">
-      <div className="relative w-full max-w-xs">
-        <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-slate-400" />
+    <div className="bg-white p-4 border border-slate-100 rounded-[20px] flex items-center justify-between mb-4 shadow-[0_8px_30px_rgb(0,0,0,0.012)]">
+      <div className="relative w-full max-w-xs text-left">
+        <Search className="absolute left-3.5 top-3 h-3.5 w-3.5 text-slate-400" />
         <input
           type="text"
           placeholder="Search expenses..."
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full bg-white/80 border border-[#e7d9e8] text-slate-700 text-xs rounded-2xl pl-8 pr-3 py-2 focus:outline-none placeholder-slate-400 focus:border-[#c7abda] transition-colors"
+          className="w-full bg-slate-50 border border-slate-100 text-slate-700 text-xs rounded-xl pl-9 pr-3.5 py-2.5 focus:outline-none focus:border-purple-300 focus:bg-white transition-all placeholder-slate-400 font-semibold"
         />
       </div>
     </div>
@@ -58,22 +58,22 @@ function ExpenseTable({ expenses, onDelete, permission }) {
   const getStatusClass = (status) => {
     switch (status) {
       case 'Approved':
-        return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/25';
+        return 'bg-emerald-50 text-emerald-700 border-emerald-100';
       case 'Pending':
-        return 'bg-amber-500/10 text-amber-400 border border-amber-500/25';
+        return 'bg-amber-50 text-amber-700 border-amber-100';
       case 'Rejected':
-        return 'bg-rose-500/10 text-rose-400 border border-rose-500/25';
+        return 'bg-rose-50 text-rose-700 border-rose-100';
       default:
-        return 'bg-slate-500/10 text-slate-400 border border-slate-500/25';
+        return 'bg-slate-50 text-slate-700 border-slate-100';
     }
   };
 
   return (
-    <div className="bg-[#fcf8f3]/90 border border-[#e9dfd7] rounded-[24px] overflow-hidden shadow-[0_12px_40px_-20px_rgba(76,54,97,0.22)] backdrop-blur">
+    <div className="bg-white border border-slate-100 rounded-[20px] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.012)]">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-slate-800 text-[10px] font-semibold text-slate-500 uppercase tracking-wider bg-slate-900/10">
+            <tr className="border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50/50">
               <th className="px-5 py-3">Trip ID</th>
               <th className="px-5 py-3">Vehicle</th>
               <th className="px-5 py-3">Expense Type</th>
@@ -84,37 +84,37 @@ function ExpenseTable({ expenses, onDelete, permission }) {
               {permission === 'edit' && <th className="px-5 py-3 text-center">Actions</th>}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/50 text-xs text-slate-300">
+          <tbody className="divide-y divide-slate-100/60 text-xs text-slate-650">
             {expenses.length > 0 ? (
               expenses.map((expense) => (
                 <tr 
                   key={expense.id} 
-                  className="hover:bg-slate-800/30 transition-colors duration-100"
+                  className="hover:bg-slate-50/50 transition-colors duration-100"
                 >
-                  <td className="px-5 py-3.5 font-mono text-slate-400">{expense.tripId}</td>
-                  <td className="px-5 py-3.5 font-mono text-slate-200 font-medium">{expense.vehicle}</td>
-                  <td className="px-5 py-3.5 font-medium text-slate-300">{expense.type}</td>
-                  <td className="px-5 py-3.5 text-right font-bold text-slate-200">{expense.amount}</td>
-                  <td className="px-5 py-3.5 text-slate-400">{expense.date}</td>
-                  <td className="px-5 py-3.5 text-slate-500 max-w-xs truncate">{expense.remarks}</td>
+                  <td className="px-5 py-3.5 font-mono text-slate-500 font-medium">{expense.tripId}</td>
+                  <td className="px-5 py-3.5 font-mono text-slate-800 font-bold">{expense.vehicle}</td>
+                  <td className="px-5 py-3.5 font-semibold text-slate-750">{expense.type}</td>
+                  <td className="px-5 py-3.5 text-right font-bold text-slate-850">{expense.amount}</td>
+                  <td className="px-5 py-3.5 text-slate-500 font-medium">{expense.date}</td>
+                  <td className="px-5 py-3.5 text-slate-450 max-w-xs truncate font-medium">{expense.remarks}</td>
                   <td className="px-5 py-3.5 text-center">
-                    <span className={`inline-flex px-2 py-0.5 text-[9px] font-semibold rounded uppercase tracking-wider ${getStatusClass(expense.status)}`}>
+                    <span className={`inline-flex px-2.5 py-0.5 text-[9px] font-bold border rounded-full uppercase tracking-wider ${getStatusClass(expense.status)}`}>
                       {expense.status}
                     </span>
                   </td>
                   {permission === 'edit' && (
                     <td className="px-5 py-3.5 text-center">
-                      <div className="flex items-center justify-center space-x-2">
+                      <div className="flex items-center justify-center space-x-2.5">
                         <button 
                           onClick={() => alert(`Edit Expense details for ${expense.type}`)}
-                          className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                          className="p-1 text-slate-400 hover:text-[#7c5a9f] transition-colors cursor-pointer"
                           title="Edit Expense"
                         >
                           <Edit2 size={12} />
                         </button>
                         <button 
                           onClick={() => onDelete(expense.id)}
-                          className="p-1 rounded hover:bg-rose-950/40 text-slate-400 hover:text-rose-400 transition-colors cursor-pointer"
+                          className="p-1 text-slate-400 hover:text-rose-550 transition-colors cursor-pointer"
                           title="Delete Expense"
                         >
                           <Trash2 size={12} />
@@ -126,7 +126,7 @@ function ExpenseTable({ expenses, onDelete, permission }) {
               ))
             ) : (
               <tr>
-                <td colSpan="8" className="px-5 py-8 text-center text-slate-500">
+                <td colSpan="8" className="px-5 py-8 text-center text-slate-450 font-semibold">
                   No expense records found.
                 </td>
               </tr>
@@ -136,18 +136,18 @@ function ExpenseTable({ expenses, onDelete, permission }) {
       </div>
 
       {/* Dummy Pagination */}
-      <div className="px-5 py-4 border-t border-[#e9dfd7] flex items-center justify-between text-xs text-slate-500 bg-[#f7efe8]/70">
+      <div className="px-5 py-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 bg-slate-50/50">
         <span>Showing 1-{expenses.length} of {expenses.length} entries</span>
         <div className="flex items-center space-x-1.5">
           <button 
             disabled 
-            className="px-2.5 py-1 rounded bg-slate-800 border border-slate-800/50 text-slate-500 cursor-not-allowed text-[10px] font-semibold"
+            className="px-3 py-1.5 rounded-lg bg-white border border-slate-100 text-slate-350 cursor-not-allowed text-[10px] font-bold"
           >
             Prev
           </button>
           <button 
             disabled 
-            className="px-2.5 py-1 rounded bg-slate-800 border border-slate-800/50 text-slate-500 cursor-not-allowed text-[10px] font-semibold"
+            className="px-3 py-1.5 rounded-lg bg-white border border-slate-100 text-slate-355 cursor-not-allowed text-[10px] font-bold"
           >
             Next
           </button>
@@ -251,56 +251,58 @@ export default function Expenses({ permission }) {
         onDelete={handleDelete} 
         permission={permission}
       />
-
       {/* Add Expense Modal */}
       {isModalOpen && permission === 'edit' && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-          <div className="bg-[#1E293B] border border-slate-800 rounded-lg max-w-lg w-full overflow-hidden shadow-2xl flex flex-col">
+        <div className="fixed inset-0 bg-slate-950/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white border border-slate-100 rounded-[24px] max-w-lg w-full overflow-hidden shadow-2xl flex flex-col">
             
             {/* Modal Header */}
-            <div className="px-5 py-4 border-b border-[#e9dfd7] flex justify-between items-center bg-[#f7efe8]/70">
-              <h3 className="text-sm font-semibold text-slate-800">Add Operational Expense</h3>
+            <div className="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+              <div className="text-left">
+                <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400">Finance</p>
+                <h3 className="text-xs font-bold text-slate-800">Add Operational Expense</h3>
+              </div>
               <button 
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg border border-slate-100 hover:bg-slate-50 text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
               >
-                <X size={16} />
+                <X size={14} />
               </button>
             </div>
-
+ 
             {/* Modal Form */}
             <form onSubmit={handleFormSubmit} className="p-5 flex-1 overflow-y-auto space-y-4 text-left">
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col">
-                  <label className="text-[10px] text-slate-500 font-medium mb-1 uppercase tracking-wider">Vehicle ID *</label>
+                  <label className="text-[10px] text-slate-400 font-bold mb-1.5 uppercase tracking-wider pl-0.5">Vehicle ID *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. GJ01AB4521"
                     value={form.vehicle}
                     onChange={(e) => setForm({...form, vehicle: e.target.value})}
-                    className="bg-[#0F172A] border border-slate-800 text-slate-200 text-xs rounded px-3 py-2 focus:outline-none focus:border-slate-700"
+                    className="bg-slate-50 border border-slate-100 text-slate-700 text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-purple-300 focus:bg-white transition-all font-semibold"
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label className="text-[10px] text-slate-500 font-medium mb-1 uppercase tracking-wider">Trip ID</label>
+                  <label className="text-[10px] text-slate-400 font-bold mb-1.5 uppercase tracking-wider pl-0.5">Trip ID</label>
                   <input
                     type="text"
                     placeholder="e.g. TRIP-102"
                     value={form.tripId}
                     onChange={(e) => setForm({...form, tripId: e.target.value})}
-                    className="bg-[#0F172A] border border-slate-800 text-slate-200 text-xs rounded px-3 py-2 focus:outline-none focus:border-slate-700"
+                    className="bg-slate-50 border border-slate-100 text-slate-700 text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-purple-300 focus:bg-white transition-all font-semibold"
                   />
                 </div>
               </div>
-
+ 
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col">
-                  <label className="text-[10px] text-slate-500 font-medium mb-1 uppercase tracking-wider">Expense Type *</label>
+                  <label className="text-[10px] text-slate-400 font-bold mb-1.5 uppercase tracking-wider pl-0.5">Expense Type *</label>
                   <select
                     value={form.type}
                     onChange={(e) => setForm({...form, type: e.target.value})}
-                    className="bg-[#0F172A] border border-slate-800 text-slate-205 text-xs rounded px-3 py-2 focus:outline-none focus:border-slate-700"
+                    className="bg-slate-50 border border-slate-100 text-slate-700 text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-purple-300 focus:bg-white transition-all cursor-pointer font-semibold"
                   >
                     <option value="Toll Tax">Toll Tax</option>
                     <option value="Maintenance">Maintenance</option>
@@ -311,35 +313,35 @@ export default function Expenses({ permission }) {
                   </select>
                 </div>
                 <div className="flex flex-col">
-                  <label className="text-[10px] text-slate-500 font-medium mb-1 uppercase tracking-wider">Date *</label>
+                  <label className="text-[10px] text-slate-400 font-bold mb-1.5 uppercase tracking-wider pl-0.5">Date *</label>
                   <input
                     type="date"
                     required
                     value={form.date}
                     onChange={(e) => setForm({...form, date: e.target.value})}
-                    className="bg-[#0F172A] border border-slate-800 text-slate-200 text-xs rounded px-3 py-2 focus:outline-none focus:border-slate-700"
+                    className="bg-slate-50 border border-slate-100 text-slate-700 text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-purple-300 focus:bg-white transition-all cursor-pointer font-semibold"
                   />
                 </div>
               </div>
-
+ 
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col">
-                  <label className="text-[10px] text-slate-500 font-medium mb-1 uppercase tracking-wider">Amount (INR) *</label>
+                  <label className="text-[10px] text-slate-400 font-bold mb-1.5 uppercase tracking-wider pl-0.5">Amount (INR) *</label>
                   <input
                     type="number"
                     required
                     placeholder="e.g. 350"
                     value={form.amount}
                     onChange={(e) => setForm({...form, amount: e.target.value})}
-                    className="bg-[#0F172A] border border-slate-800 text-slate-200 text-xs rounded px-3 py-2 focus:outline-none focus:border-slate-700"
+                    className="bg-slate-50 border border-slate-100 text-slate-700 text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-purple-300 focus:bg-white transition-all font-semibold"
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label className="text-[10px] text-slate-500 font-medium mb-1 uppercase tracking-wider">Status</label>
+                  <label className="text-[10px] text-slate-400 font-bold mb-1.5 uppercase tracking-wider pl-0.5">Status</label>
                   <select
                     value={form.status}
                     onChange={(e) => setForm({...form, status: e.target.value})}
-                    className="bg-[#0F172A] border border-slate-800 text-slate-205 text-xs rounded px-3 py-2 focus:outline-none focus:border-slate-700"
+                    className="bg-slate-50 border border-slate-100 text-slate-700 text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-purple-300 focus:bg-white transition-all cursor-pointer font-semibold"
                   >
                     <option value="Pending">Pending</option>
                     <option value="Approved">Approved</option>
@@ -347,30 +349,30 @@ export default function Expenses({ permission }) {
                   </select>
                 </div>
               </div>
-
+ 
               <div className="flex flex-col">
-                <label className="text-[10px] text-slate-500 font-medium mb-1 uppercase tracking-wider">Remarks</label>
+                <label className="text-[10px] text-slate-400 font-bold mb-1.5 uppercase tracking-wider pl-0.5">Remarks</label>
                 <textarea
                   rows="2"
                   placeholder="Expense description details..."
                   value={form.remarks}
                   onChange={(e) => setForm({...form, remarks: e.target.value})}
-                  className="bg-[#0F172A] border border-slate-800 text-slate-200 text-xs rounded px-3 py-2 focus:outline-none focus:border-slate-700 resize-none"
+                  className="bg-slate-50 border border-slate-100 text-slate-750 text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-purple-300 focus:bg-white transition-all resize-none font-semibold"
                 />
               </div>
-
+ 
               {/* Modal Actions */}
-              <div className="pt-3 border-t border-[#e9dfd7] flex justify-end space-x-2 bg-[#f7efe8]/70">
+              <div className="pt-3.5 border-t border-slate-100 flex justify-end space-x-2 bg-slate-50/50 p-4 -mx-5 -mb-5 rounded-b-[24px]">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-semibold px-4 py-2 rounded cursor-pointer"
+                  className="bg-white hover:bg-slate-50 border border-slate-100 text-slate-500 text-xs font-bold px-4 py-2 rounded-xl cursor-pointer transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-[#714B67] hover:bg-[#4a3048] text-white text-xs font-semibold px-4 py-2 rounded cursor-pointer"
+                  className="bg-gradient-to-r from-[#7c5a9f] to-[#5e3d75] hover:opacity-95 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md shadow-purple-100 transition-all hover:-translate-y-0.5 cursor-pointer"
                 >
                   Add Expense
                 </button>

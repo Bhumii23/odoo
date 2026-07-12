@@ -11,10 +11,17 @@ import DriverManagement from './pages/DriverManagement/DriverManagement';
 import TripDispatcher from './pages/TripDispatcher/TripDispatcher';
 import Maintenance from './pages/Maintenance/Maintenance';
 import Settings from './pages/Settings/Settings';
-import {
-  Plus,
-  Search,
-  ShieldAlert
+import { 
+  Plus, 
+  Search, 
+  ShieldAlert,
+  Truck,
+  Users,
+  TrendingUp,
+  CreditCard,
+  Activity,
+  Edit2,
+  Trash2
 } from 'lucide-react';
 import { permissions } from './config/permissions';
 import AccessDenied from './components/AccessDenied';
@@ -119,9 +126,9 @@ function DashboardView() {
 
   // Helper for generating page headers
   const renderPageHeader = (title, subtitle) => (
-    <div className="mb-5">
-      <h1 className="text-xl font-semibold tracking-tight text-slate-100">{title}</h1>
-      <p className="text-xs text-slate-400 mt-1">{subtitle}</p>
+    <div className="mb-6 flex flex-col text-left">
+      <h1 className="text-xl font-bold tracking-tight text-slate-800">{title}</h1>
+      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1">{subtitle}</p>
     </div>
   );
 
@@ -184,54 +191,71 @@ function DashboardView() {
           </div>
         );
 
-      case 'dashboard':
+      case 'dashboard': {
+        const kpis = [
+          { title: 'Active Vehicles', value: '18 / 24', trend: '+2% from yesterday', icon: Truck, gradient: 'from-[#7c5a9f] to-[#5e3d75]' },
+          { title: 'Total Drivers', value: '29', trend: '3 on leave', icon: Users, gradient: 'from-blue-500 to-indigo-600' },
+          { title: 'Fleet Utilization', value: '82%', trend: '+4% this month', icon: TrendingUp, gradient: 'from-emerald-500 to-teal-600' },
+          { title: 'Monthly Expenses', value: '₹ 4,82,900', trend: '-12% vs last month', icon: CreditCard, gradient: 'from-rose-500 to-pink-600' }
+        ];
+
         return (
           <div className="space-y-6 text-left">
-            {renderPageHeader("Welcome, Raven", "Fleet operations and metrics summary for today.")}
+            {renderPageHeader("Welcome back, Raven", "Fleet operations and metrics summary for today.")}
 
-            {/* KPI Cards Grid - Simple & Plain */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                { title: 'Active Vehicles', value: '18 / 24', trend: '+2% from yesterday' },
-                { title: 'Total Drivers', value: '29', trend: '3 on leave' },
-                { title: 'Fleet Utilization', value: '82%', trend: '+4% this month' },
-                { title: 'Monthly Expenses', value: '₹ 4,82,900', trend: '-12% vs last month' }
-              ].map((card, i) => (
-                <div key={i} className="bg-[#1E293B] border border-slate-800/80 p-4.5 rounded-lg">
-                  <span className="text-xs font-medium text-slate-400 uppercase tracking-wider block mb-2">{card.title}</span>
-                  <span className="text-xl font-bold text-slate-100 block">{card.value}</span>
-                  <span className="text-[10px] text-slate-500 mt-2 block">{card.trend}</span>
-                </div>
-              ))}
+            {/* KPI Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+              {kpis.map((card, i) => {
+                const Icon = card.icon;
+                return (
+                  <div 
+                    key={i} 
+                    className="bg-white border border-slate-100 p-6 rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.012)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.03)] hover:-translate-y-1 transition-all duration-350 flex items-center justify-between group cursor-pointer"
+                  >
+                    <div className="space-y-2">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">{card.title}</span>
+                      <span className="text-2xl font-bold text-slate-800 tracking-tight block">{card.value}</span>
+                      <span className="text-[10px] font-semibold text-slate-400 mt-1 block">{card.trend}</span>
+                    </div>
+                    <div className={`h-11 w-11 rounded-xl bg-gradient-to-br ${card.gradient} text-white flex items-center justify-center shadow-md shadow-slate-100 group-hover:scale-105 transition-transform duration-300`}>
+                      <Icon size={16} />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
             {/* Simple Dashboard Placeholder */}
-            <div className="bg-[#1E293B] border border-slate-800/80 rounded-lg p-8 text-center min-h-[220px] flex flex-col justify-center items-center">
-              <h3 className="text-sm font-semibold text-slate-200 mb-1">Live Feed</h3>
-              <p className="text-xs text-slate-400 max-w-sm">
+            <div className="bg-white border border-slate-100 rounded-[20px] p-12 text-center shadow-[0_8px_30px_rgb(0,0,0,0.012)] min-h-[260px] flex flex-col justify-center items-center">
+              <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-450 mb-3.5 border border-slate-100">
+                <Activity size={18} />
+              </div>
+              <h3 className="text-xs font-bold text-slate-700 mb-1 tracking-tight">Live Activity Feed</h3>
+              <p className="text-[11px] text-slate-450 max-w-xs leading-relaxed">
                 Real-time tracking analytics and activity feeds are currently offline.
               </p>
             </div>
           </div>
         );
+      }
 
       case 'fleet':
         return (
-          <div className="space-y-6 text-left">
-            {renderPageHeader("Fleet", "Active fleet registration registry.")}
+          <div className="space-y-6 text-left animate-fadeIn">
+            {renderPageHeader("Fleet Registry", "Active fleet registration registry.")}
 
-            {/* Filter and Action Header - Simple & Clean */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center bg-[#1E293B] p-4 border border-slate-800/85 rounded-lg">
-              <div className="flex flex-wrap items-center gap-3">
+            {/* Filter and Action Header */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center bg-white p-5 border border-slate-100 rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.012)]">
+              <div className="flex flex-wrap items-center gap-4">
                 {/* Type Selection */}
-                <div className="flex flex-col">
-                  <label className="text-[10px] text-slate-500 mb-1 font-medium pl-0.5">Type</label>
+                <div className="flex flex-col text-left">
+                  <label className="text-[10px] text-slate-400 mb-1.5 font-bold uppercase tracking-wider pl-0.5">Type</label>
                   <select
                     value={typeFilter}
                     onChange={(e) => setTypeFilter(e.target.value)}
-                    className="bg-[#0F172A] border border-slate-800 text-slate-300 text-xs rounded px-2.5 py-1.5 focus:outline-none"
+                    className="bg-slate-50 border border-slate-100 text-slate-600 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-purple-300 focus:bg-white transition-all cursor-pointer min-w-[120px] font-semibold"
                   >
-                    <option value="All">All</option>
+                    <option value="All">All Types</option>
                     <option value="Van">Van</option>
                     <option value="Truck">Truck</option>
                     <option value="Mini">Mini</option>
@@ -239,14 +263,14 @@ function DashboardView() {
                 </div>
 
                 {/* Status Selection */}
-                <div className="flex flex-col">
-                  <label className="text-[10px] text-slate-500 mb-1 font-medium pl-0.5">Status</label>
+                <div className="flex flex-col text-left">
+                  <label className="text-[10px] text-slate-400 mb-1.5 font-bold uppercase tracking-wider pl-0.5">Status</label>
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="bg-[#0F172A] border border-slate-800 text-slate-300 text-xs rounded px-2.5 py-1.5 focus:outline-none"
+                    className="bg-slate-50 border border-slate-100 text-slate-600 text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-purple-300 focus:bg-white transition-all cursor-pointer min-w-[120px] font-semibold"
                   >
-                    <option value="All">All</option>
+                    <option value="All">All Statuses</option>
                     <option value="Available">Available</option>
                     <option value="On Trip">On Trip</option>
                     <option value="In Shop">In Shop</option>
@@ -255,16 +279,16 @@ function DashboardView() {
                 </div>
 
                 {/* Local search inside table */}
-                <div className="flex flex-col">
-                  <label className="text-[10px] text-slate-500 mb-1 font-medium pl-0.5">Search Registry</label>
+                <div className="flex flex-col text-left">
+                  <label className="text-[10px] text-slate-400 mb-1.5 font-bold uppercase tracking-wider pl-0.5">Search Registry</label>
                   <div className="relative">
-                    <Search className="absolute left-2 top-2 h-3.5 w-3.5 text-slate-500" />
+                    <Search className="absolute left-3 top-3 h-3.5 w-3.5 text-slate-400" />
                     <input
                       type="text"
                       placeholder="Search reg. no..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="bg-[#0F172A] border border-slate-800 text-slate-300 text-xs rounded pl-7 pr-2.5 py-1.5 focus:outline-none placeholder-slate-600 w-44"
+                      className="bg-slate-50 border border-slate-100 text-slate-700 text-xs rounded-xl pl-9 pr-3 py-2.5 focus:outline-none focus:border-purple-300 focus:bg-white placeholder-slate-400 w-48 transition-all font-semibold"
                     />
                   </div>
                 </div>
@@ -274,7 +298,7 @@ function DashboardView() {
               {permissions[user.role]?.['fleet'] === 'edit' && (
                 <button
                   onClick={handleAddVehicle}
-                  className="w-full sm:w-auto flex items-center justify-center space-x-1.5 bg-[#714B67] hover:bg-[#4a3048] text-white px-3 py-1.5 rounded text-xs font-semibold transition-all duration-200 cursor-pointer self-end"
+                  className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-gradient-to-r from-[#7c5a9f] to-[#5e3d75] hover:opacity-95 text-white px-5 py-2.5 rounded-xl text-xs font-semibold shadow-md shadow-purple-100 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer self-end"
                 >
                   <Plus size={14} />
                   <span>Add Vehicle</span>
@@ -282,54 +306,54 @@ function DashboardView() {
               )}
             </div>
 
-            {/* Fleet Table Area - Simple Grid */}
-            <div className="bg-[#1E293B] border border-slate-800/80 rounded-lg overflow-hidden">
+            {/* Fleet Table Area */}
+            <div className="bg-white border border-slate-100 rounded-[20px] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.012)]">
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-800 text-[10px] font-semibold text-slate-500 uppercase tracking-wider bg-slate-900/10">
-                      <th className="px-5 py-3">Reg. No. (Unique)</th>
-                      <th className="px-5 py-3">Name/Code</th>
-                      <th className="px-5 py-3">Type</th>
-                      <th className="px-5 py-3">Capacity</th>
-                      <th className="px-5 py-3">Odometer</th>
-                      <th className="px-5 py-3">Acq. Cost</th>
-                      <th className="px-5 py-3">Status</th>
-                      {permissions[user.role]?.['fleet'] === 'edit' && <th className="px-5 py-3 text-right">Actions</th>}
+                    <tr className="border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50/50">
+                      <th className="px-6 py-4">Reg. No. (Unique)</th>
+                      <th className="px-6 py-4">Name/Code</th>
+                      <th className="px-6 py-4">Type</th>
+                      <th className="px-6 py-4">Capacity</th>
+                      <th className="px-6 py-4">Odometer</th>
+                      <th className="px-6 py-4">Acq. Cost</th>
+                      <th className="px-6 py-4">Status</th>
+                      {permissions[user.role]?.['fleet'] === 'edit' && <th className="px-6 py-4 text-right">Actions</th>}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/50 text-xs text-slate-300">
+                  <tbody className="divide-y divide-slate-100/60 text-xs text-slate-650">
                     {filteredFleet.length > 0 ? (
                       filteredFleet.map((vehicle) => (
                         <tr
                           key={vehicle.regNo}
-                          className="hover:bg-slate-800/30 transition-colors duration-100"
+                          className="hover:bg-slate-50/50 transition-colors duration-100"
                         >
-                          <td className="px-5 py-3 font-mono">
+                          <td className="px-6 py-4 font-mono font-bold text-slate-700">
                             {vehicle.regNo}
                           </td>
-                          <td className="px-5 py-3 font-medium text-slate-200">{vehicle.name}</td>
-                          <td className="px-5 py-3 text-slate-400">{vehicle.type}</td>
-                          <td className="px-5 py-3 text-slate-400">{vehicle.capacity}</td>
-                          <td className="px-5 py-3 text-slate-400">{vehicle.odometer}</td>
-                          <td className="px-5 py-3 text-slate-400">{vehicle.cost}</td>
-                          <td className="px-5 py-3">
-                            <span className={`inline-flex px-2.5 py-1 text-[10px] font-medium rounded text-center w-20 justify-center ${getStatusBadgeClass(vehicle.status)}`}>
+                          <td className="px-6 py-4 font-bold text-slate-800">{vehicle.name}</td>
+                          <td className="px-6 py-4 text-slate-500 font-medium">{vehicle.type}</td>
+                          <td className="px-6 py-4 text-slate-500 font-medium">{vehicle.capacity}</td>
+                          <td className="px-6 py-4 text-slate-500 font-semibold">{vehicle.odometer} km</td>
+                          <td className="px-6 py-4 text-slate-500 font-semibold">₹ {vehicle.cost}</td>
+                          <td className="px-6 py-4">
+                            <span className={`inline-flex px-3 py-1 text-[9px] font-bold uppercase tracking-wider rounded-full text-center border ${getStatusBadgeClass(vehicle.status)}`}>
                               {vehicle.status}
                             </span>
                           </td>
                           {permissions[user.role]?.['fleet'] === 'edit' && (
-                            <td className="px-5 py-3 text-right">
-                              <div className="flex justify-end space-x-2">
+                            <td className="px-6 py-4 text-right">
+                              <div className="flex justify-end space-x-3.5">
                                 <button
                                   onClick={() => alert(`Edit vehicle ${vehicle.name}`)}
-                                  className="text-slate-400 hover:text-white mr-2"
+                                  className="text-slate-400 hover:text-[#7c5a9f] font-bold transition-colors cursor-pointer text-[11px]"
                                 >
                                   Edit
                                 </button>
                                 <button
                                   onClick={() => alert(`Delete vehicle ${vehicle.name}`)}
-                                  className="text-slate-400 hover:text-rose-450"
+                                  className="text-slate-400 hover:text-rose-500 font-bold transition-colors cursor-pointer text-[11px]"
                                 >
                                   Delete
                                 </button>
@@ -340,7 +364,7 @@ function DashboardView() {
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={permissions[user.role]?.['fleet'] === 'edit' ? "8" : "7"} className="px-5 py-8 text-center text-slate-500">
+                        <td colSpan={permissions[user.role]?.['fleet'] === 'edit' ? "8" : "7"} className="px-6 py-8 text-center text-slate-400 font-semibold">
                           No matching vehicles found.
                         </td>
                       </tr>
@@ -350,9 +374,9 @@ function DashboardView() {
               </div>
             </div>
 
-            {/* Hint Warning Box from the screenshot */}
-            <div className="flex items-start space-x-2 bg-amber-500/5 border border-amber-500/10 p-3.5 rounded">
-              <p className="text-[10px] text-amber-500/90 leading-normal font-medium">
+            {/* Hint Warning Box */}
+            <div className="flex items-start space-x-2 bg-amber-500/5 border border-amber-500/10 p-4 rounded-xl">
+              <p className="text-[10px] text-amber-600 leading-normal font-semibold uppercase tracking-wider">
                 Rule: Registration No. must be unique • Retired/In Shop vehicles are hidden from Trip Dispatcher.
               </p>
             </div>

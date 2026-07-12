@@ -12,24 +12,25 @@ export default function DashboardLayout({
   children,
 }) {
   return (
-    <div className="min-h-screen w-screen bg-transparent text-slate-800 flex overflow-hidden">
+    <div className="min-h-screen w-screen bg-[#F8F6F9] text-slate-800 flex p-4 gap-4 overflow-hidden font-sans">
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         isCollapsed={isCollapsed}
         setIsCollapsed={setIsCollapsed}
+        user={user}
       />
 
-      <div className="flex min-h-[calc(100vh-2rem)] flex-1 flex-col overflow-hidden rounded-[30px] border border-[#EFE6EE] bg-[#F8F6F9] shadow-[0_24px_90px_-44px_rgba(93,63,88,0.35)]">
+      <div className="flex-1 flex flex-col h-[calc(100vh-2rem)] overflow-hidden gap-4">
         <Header activeTab={activeTab} />
-        <div className="flex flex-1 flex-col overflow-y-auto">
-          <main className="flex-1 px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+
+        <div className="flex-1 overflow-y-auto flex flex-col bg-transparent gap-4 pr-1">
+          <main className="flex-grow">
             <div className="mx-auto max-w-7xl">{children}</div>
           </main>
           <Footer />
         </div>
       </div>
     </div>
-
   );
 }

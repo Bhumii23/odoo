@@ -200,50 +200,50 @@ export default function DriverManagement() {
                 </button>
               </div>
 
-              <form onSubmit={handleFormSubmit} className="flex-1 space-y-4 overflow-y-auto p-5 text-left">
+              <form onSubmit={handleFormSubmit} className="flex-1 space-y-4 overflow-y-auto p-5 text-left bg-white">
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="flex flex-col">
-                    <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">Driver Name *</label>
+                    <label className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 pl-0.5">Driver Name *</label>
                     <input
                       type="text"
                       required
                       placeholder="e.g. John Smith"
                       value={form.name}
                       onChange={(e) => setForm({...form, name: e.target.value})}
-                      className="rounded-2xl border border-[#ece7ef] bg-[#fcfbfe] px-3 py-2.5 text-sm text-slate-900 transition-all duration-200 focus:border-[#d9cceb] focus:outline-none focus:ring-4 focus:ring-[#f4eaff]"
+                      className="bg-slate-50 border border-slate-100 text-slate-700 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-purple-300 focus:bg-white transition-all font-semibold"
                     />
                   </div>
                   <div className="flex flex-col">
-                    <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">Employee ID *</label>
+                    <label className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 pl-0.5">Employee ID *</label>
                     <input
                       type="text"
                       required
                       placeholder="e.g. DRV009"
                       value={form.employeeId}
                       onChange={(e) => setForm({...form, employeeId: e.target.value})}
-                      className="rounded-2xl border border-[#ece7ef] bg-[#fcfbfe] px-3 py-2.5 text-sm text-slate-900 transition-all duration-200 focus:border-[#d9cceb] focus:outline-none focus:ring-4 focus:ring-[#f4eaff]"
+                      className="bg-slate-50 border border-slate-100 text-slate-700 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-purple-300 focus:bg-white transition-all font-semibold"
                     />
                   </div>
                 </div>
-
+ 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="flex flex-col">
-                    <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">License Number *</label>
+                    <label className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 pl-0.5">License Number *</label>
                     <input
                       type="text"
                       required
                       placeholder="e.g. DL-12345"
                       value={form.licenseNumber}
                       onChange={(e) => setForm({...form, licenseNumber: e.target.value})}
-                      className="rounded-2xl border border-[#ece7ef] bg-[#fcfbfe] px-3 py-2.5 text-sm text-slate-900 transition-all duration-200 focus:border-[#d9cceb] focus:outline-none focus:ring-4 focus:ring-[#f4eaff]"
+                      className="bg-slate-50 border border-slate-100 text-slate-700 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-purple-300 focus:bg-white transition-all font-semibold"
                     />
                   </div>
                   <div className="flex flex-col">
-                    <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">License Category *</label>
+                    <label className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 pl-0.5">License Category *</label>
                     <select
                       value={form.licenseCategory}
                       onChange={(e) => setForm({...form, licenseCategory: e.target.value})}
-                      className="rounded-2xl border border-[#ece7ef] bg-[#fcfbfe] px-3 py-2.5 text-sm text-slate-900 transition-all duration-200 focus:border-[#d9cceb] focus:outline-none focus:ring-4 focus:ring-[#f4eaff]"
+                      className="bg-slate-50 border border-slate-100 text-slate-700 text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-purple-300 focus:bg-white transition-all cursor-pointer font-semibold"
                     >
                       <option value="LMV">LMV (Light Motor)</option>
                       <option value="HMV">HMV (Heavy Motor)</option>
@@ -252,65 +252,65 @@ export default function DriverManagement() {
                     </select>
                   </div>
                 </div>
-
+ 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="flex flex-col">
-                    <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">Phone Number</label>
+                    <label className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 pl-0.5">Phone Number</label>
                     <input
                       type="text"
                       placeholder="e.g. +91 99999 88888"
                       value={form.phoneNumber}
                       onChange={(e) => setForm({...form, phoneNumber: e.target.value})}
-                      className="rounded-2xl border border-[#ece7ef] bg-[#fcfbfe] px-3 py-2.5 text-sm text-slate-900 transition-all duration-200 focus:border-[#d9cceb] focus:outline-none focus:ring-4 focus:ring-[#f4eaff]"
+                      className="bg-slate-50 border border-slate-100 text-slate-700 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-purple-300 focus:bg-white transition-all font-semibold"
                     />
                   </div>
                   <div className="flex flex-col">
-                    <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">License Expiry *</label>
+                    <label className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 pl-0.5">License Expiry *</label>
                     <input
                       type="date"
                       required
                       value={form.licenseExpiry}
                       onChange={(e) => setForm({...form, licenseExpiry: e.target.value})}
-                      className="rounded-2xl border border-[#ece7ef] bg-[#fcfbfe] px-3 py-2.5 text-sm text-slate-900 transition-all duration-200 focus:border-[#d9cceb] focus:outline-none focus:ring-4 focus:ring-[#f4eaff]"
+                      className="bg-slate-50 border border-slate-100 text-slate-750 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-purple-300 focus:bg-white transition-all cursor-pointer font-semibold"
                     />
                   </div>
                 </div>
-
+ 
                 <div className="grid gap-4 md:grid-cols-3">
-                <div className="flex flex-col col-span-2">
-                  <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#7A7180]">Assigned Vehicle</label>
-                  <select
-                    value={form.assignedVehicle}
-                    onChange={(e) => setForm({...form, assignedVehicle: e.target.value})}
-                    className="rounded-2xl border border-[#E9E2EC] bg-[#FCFAFD] px-3 py-2.5 text-sm text-[#2E2331] transition-all duration-200 focus:border-[#DCCFD9] focus:outline-none focus:ring-4 focus:ring-[#F4EAF5]"
-                  >
-                    <option value="None">None (Unassigned)</option>
-                    <option value="GJ01AB4521 (VAN-05)">GJ01AB4521 (VAN-05)</option>
-                    <option value="GJ01AB9981 (TRUCK-11)">GJ01AB9981 (TRUCK-11)</option>
-                    <option value="GJ01AB1120 (MINI-03)">GJ01AB1120 (MINI-03)</option>
-                    <option value="GJ01AB0008 (VAN-09)">GJ01AB0008 (VAN-09)</option>
-                  </select>
+                  <div className="flex flex-col col-span-2">
+                    <label className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 pl-0.5">Assigned Vehicle</label>
+                    <select
+                      value={form.assignedVehicle}
+                      onChange={(e) => setForm({...form, assignedVehicle: e.target.value})}
+                      className="bg-slate-50 border border-slate-100 text-slate-700 text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-purple-300 focus:bg-white transition-all cursor-pointer font-semibold"
+                    >
+                      <option value="None">None (Unassigned)</option>
+                      <option value="GJ01AB4521 (VAN-05)">GJ01AB4521 (VAN-05)</option>
+                      <option value="GJ01AB9981 (TRUCK-11)">GJ01AB9981 (TRUCK-11)</option>
+                      <option value="GJ01AB1120 (MINI-03)">GJ01AB1120 (MINI-03)</option>
+                      <option value="GJ01AB0008 (VAN-09)">GJ01AB0008 (VAN-09)</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 pl-0.5">Safety Score</label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      placeholder="100"
+                      value={form.safetyScore}
+                      onChange={(e) => setForm({...form, safetyScore: e.target.value})}
+                      className="bg-slate-50 border border-slate-100 text-slate-700 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-purple-300 focus:bg-white transition-all font-semibold"
+                    />
+                  </div>
                 </div>
+ 
                 <div className="flex flex-col">
-                  <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#7A7180]">Safety Score</label>
-                  <input
-                    type="number"
-                    min="0"
-                    max="100"
-                    placeholder="100"
-                    value={form.safetyScore}
-                    onChange={(e) => setForm({...form, safetyScore: e.target.value})}
-                    className="rounded-2xl border border-[#E9E2EC] bg-[#FCFAFD] px-3 py-2.5 text-sm text-[#2E2331] transition-all duration-200 focus:border-[#DCCFD9] focus:outline-none focus:ring-4 focus:ring-[#F4EAF5]"
-                  />
-                </div>
-              </div>
-
-                <div className="flex flex-col">
-                  <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">Status</label>
+                  <label className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 pl-0.5">Status</label>
                   <select
                     value={form.status}
                     onChange={(e) => setForm({...form, status: e.target.value})}
-                    className="rounded-2xl border border-[#ece7ef] bg-[#fcfbfe] px-3 py-2.5 text-sm text-slate-900 transition-all duration-200 focus:border-[#d9cceb] focus:outline-none focus:ring-4 focus:ring-[#f4eaff]"
+                    className="bg-slate-50 border border-slate-100 text-slate-700 text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-purple-300 focus:bg-white transition-all cursor-pointer font-semibold"
                   >
                     <option value="Available">Available</option>
                     <option value="On Trip">On Trip</option>
@@ -318,18 +318,18 @@ export default function DriverManagement() {
                     <option value="Suspended">Suspended</option>
                   </select>
                 </div>
-
-                <div className="flex justify-end gap-2 border-t border-[#ece7ef] bg-[#fcfbfe] px-1 py-3">
+ 
+                <div className="pt-3.5 border-t border-slate-100 flex justify-end space-x-2 bg-slate-50/50 p-4 -mx-5 -mb-5 rounded-b-[24px]">
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="rounded-2xl border border-[#ece7ef] bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition-all duration-200 hover:border-[#d9cceb] hover:bg-[#f8f6f9]"
+                    className="bg-white hover:bg-slate-50 border border-slate-100 text-slate-500 text-xs font-bold px-4 py-2 rounded-xl cursor-pointer transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="rounded-2xl bg-gradient-to-r from-[#7c3aed] to-[#a78bfa] px-4 py-2 text-sm font-semibold text-white shadow-[0_15px_34px_-18px_rgba(109,40,217,0.6)] transition-all duration-200 hover:-translate-y-0.5"
+                    className="bg-gradient-to-r from-[#7c5a9f] to-[#5e3d75] hover:opacity-95 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md shadow-purple-100 transition-all hover:-translate-y-0.5 cursor-pointer"
                   >
                     Add Driver
                   </button>

@@ -82,8 +82,6 @@ export default function Analytics() {
   const handleDownloadReport = () => {
     alert('Downloading complete system executive summary report...');
   };
-
-  // KPI definitions
   const kpiCards = [
     { title: 'Fleet Utilization', value: `${KPI_METRICS.fleetUtilization}%`, change: '+4%', isPositive: true, icon: TrendingUp, accent: 'purple', subtitle: 'vs last month' },
     { title: 'Fuel Efficiency', value: KPI_METRICS.fuelEfficiency, change: '+1.2%', isPositive: true, icon: Gauge, accent: 'amber', subtitle: 'vs last month' },
@@ -100,8 +98,8 @@ export default function Analytics() {
       <div style={{
         background: '#FFFFFF',
         borderRadius: '20px',
-        border: '1px solid #EFE8F4',
-        boxShadow: '0 2px 16px rgba(93,63,88,0.07)',
+        border: '1px solid #F1F5F9',
+        boxShadow: '0 8px 30px rgb(0,0,0,0.012)',
         padding: '24px 28px',
       }}>
         <div style={{
@@ -117,18 +115,18 @@ export default function Analytics() {
               {/* Gradient logo mark */}
               <div style={{
                 width: '40px', height: '40px', borderRadius: '12px',
-                background: 'linear-gradient(135deg, #5D3F58 0%, #8B5CF6 100%)',
+                background: 'linear-gradient(135deg, #7c5a9f 0%, #5e3d75 100%)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: '0 8px 20px rgba(93,63,88,0.3)',
+                boxShadow: '0 8px 20px rgba(124, 90, 159, 0.12)',
                 flexShrink: 0,
               }}>
                 <Activity size={20} color="#FFFFFF" strokeWidth={2} />
               </div>
-              <div>
+              <div className="text-left">
                 <h1 style={{
                   fontSize: '22px',
                   fontWeight: '800',
-                  color: '#1A1024',
+                  color: '#1E293B',
                   letterSpacing: '-0.5px',
                   margin: 0,
                   lineHeight: 1.2,
@@ -136,10 +134,13 @@ export default function Analytics() {
                   Reports & Analytics
                 </h1>
                 <p style={{
-                  fontSize: '13px',
-                  color: '#9B8FA8',
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  color: '#94A3B8',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
                   margin: 0,
-                  marginTop: '2px',
+                  marginTop: '4px',
                 }}>
                   Executive performance dashboard · Fleet operations overview
                 </p>
@@ -154,13 +155,13 @@ export default function Analytics() {
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              background: '#F5F0FA',
+              background: '#F8FAFC',
               borderRadius: '12px',
               padding: '4px',
               gap: '2px',
-              border: '1px solid #EEE8F5',
+              border: '1px solid #F1F5F9',
             }}>
-              <CalendarDays size={14} color="#9B8FA8" style={{ marginLeft: '6px', marginRight: '2px', flexShrink: 0 }} />
+              <CalendarDays size={14} color="#94A3B8" style={{ marginLeft: '6px', marginRight: '2px', flexShrink: 0 }} />
               {DATE_RANGES.map(range => (
                 <button
                   key={range}
@@ -170,15 +171,15 @@ export default function Analytics() {
                     borderRadius: '9px',
                     border: 'none',
                     background: activeDateRange === range
-                      ? 'linear-gradient(135deg, #5D3F58, #8B5CF6)'
+                      ? 'linear-gradient(135deg, #7c5a9f, #5e3d75)'
                       : 'transparent',
-                    color: activeDateRange === range ? '#FFFFFF' : '#6B5F78',
+                    color: activeDateRange === range ? '#FFFFFF' : '#64748B',
                     fontSize: '12px',
-                    fontWeight: '600',
+                    fontWeight: '700',
                     fontFamily: 'Inter, sans-serif',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
-                    boxShadow: activeDateRange === range ? '0 4px 12px rgba(93,63,88,0.3)' : 'none',
+                    boxShadow: activeDateRange === range ? '0 4px 12px rgba(124, 90, 159, 0.15)' : 'none',
                   }}
                 >
                   {range}
@@ -193,21 +194,23 @@ export default function Analytics() {
                 display: 'inline-flex', alignItems: 'center', gap: '6px',
                 padding: '8px 14px',
                 borderRadius: '12px',
-                border: '1.5px solid #EEE8F5',
+                border: '1.5px solid #F1F5F9',
                 background: '#FFFFFF',
-                color: '#5D3F58',
-                fontSize: '12px', fontWeight: '600', fontFamily: 'Inter, sans-serif',
+                color: '#64748B',
+                fontSize: '12px', fontWeight: '700', fontFamily: 'Inter, sans-serif',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.02)',
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.borderColor = 'rgba(93,63,88,0.3)';
-                e.currentTarget.style.background = '#FAF5FF';
+                e.currentTarget.style.borderColor = 'rgba(124, 90, 159, 0.2)';
+                e.currentTarget.style.background = '#F8FAFC';
+                e.currentTarget.style.color = '#7c5a9f';
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.borderColor = '#EEE8F5';
+                e.currentTarget.style.borderColor = '#F1F5F9';
                 e.currentTarget.style.background = '#FFFFFF';
+                e.currentTarget.style.color = '#64748B';
               }}
             >
               <FileSpreadsheet size={13} />
@@ -220,21 +223,23 @@ export default function Analytics() {
                 display: 'inline-flex', alignItems: 'center', gap: '6px',
                 padding: '8px 14px',
                 borderRadius: '12px',
-                border: '1.5px solid #EEE8F5',
+                border: '1.5px solid #F1F5F9',
                 background: '#FFFFFF',
-                color: '#5D3F58',
-                fontSize: '12px', fontWeight: '600', fontFamily: 'Inter, sans-serif',
+                color: '#64748B',
+                fontSize: '12px', fontWeight: '700', fontFamily: 'Inter, sans-serif',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.02)',
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.borderColor = 'rgba(93,63,88,0.3)';
-                e.currentTarget.style.background = '#FAF5FF';
+                e.currentTarget.style.borderColor = 'rgba(124, 90, 159, 0.2)';
+                e.currentTarget.style.background = '#F8FAFC';
+                e.currentTarget.style.color = '#7c5a9f';
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.borderColor = '#EEE8F5';
+                e.currentTarget.style.borderColor = '#F1F5F9';
                 e.currentTarget.style.background = '#FFFFFF';
+                e.currentTarget.style.color = '#64748B';
               }}
             >
               <FileText size={13} />
@@ -248,19 +253,19 @@ export default function Analytics() {
                 padding: '8px 16px',
                 borderRadius: '12px',
                 border: 'none',
-                background: 'linear-gradient(135deg, #5D3F58, #8B5CF6)',
+                background: 'linear-gradient(135deg, #7c5a9f, #5e3d75)',
                 color: '#FFFFFF',
                 fontSize: '12px', fontWeight: '700', fontFamily: 'Inter, sans-serif',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
-                boxShadow: '0 4px 14px rgba(93,63,88,0.35)',
+                boxShadow: '0 4px 14px rgba(124, 90, 159, 0.2)',
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.boxShadow = '0 6px 20px rgba(93,63,88,0.45)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(124, 90, 159, 0.3)';
                 e.currentTarget.style.transform = 'translateY(-1px)';
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.boxShadow = '0 4px 14px rgba(93,63,88,0.35)';
+                e.currentTarget.style.boxShadow = '0 4px 14px rgba(124, 90, 159, 0.2)';
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
