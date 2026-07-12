@@ -57,9 +57,11 @@ model Vehicle {
   type               String
   maxLoadCapacity    Float
   odometer           Float
-  acquisitionCost    Float
-  status             VehicleStatus
-  createdAt          DateTime          @default(now())
+  acquisitionCost         Float
+  status                  VehicleStatus
+  maintenanceInterval     Float             @default(10000.0)
+  lastMaintenanceOdometer Float             @default(0.0)
+  createdAt               DateTime          @default(now())
 
   trips              Trip[]
   maintenanceLogs    MaintenanceLog[]
@@ -86,6 +88,7 @@ model Driver {
   createdAt       DateTime     @default(now())
 
   trips           Trip[]
+  maintenanceLogs MaintenanceLog[]
 }
 
 enum DriverStatus {
@@ -122,17 +125,23 @@ enum TripStatus {
 model MaintenanceLog {
   id          Int               @id @default(autoincrement())
   vehicleId   Int
+  driverId    Int?
   serviceType ServiceCategory
+  description String?
   cost        Float
   date        DateTime
   status      MaintenanceStatus
 
   vehicle     Vehicle           @relation(fields: [vehicleId], references: [id])
+  driver      Driver?           @relation(fields: [driverId], references: [id])
 }
 
 enum MaintenanceStatus {
-  ACTIVE
+  PENDING_APPROVAL
+  APPROVED
+  IN_PROGRESS
   COMPLETED
+  REJECTED
 }
 
 enum ServiceCategory {

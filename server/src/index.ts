@@ -4,6 +4,8 @@ import authRoutes from './routes/auth.routes';
 import driverRoutes from './routes/drivers.routes';
 import permissionRoutes from './routes/permissions.routes';
 import vehicleRoutes from './routes/vehicle.routes';
+import tripRoutes from './routes/trip.routes';
+import maintenanceRoutes from './routes/maintenance.routes';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -15,6 +17,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/drivers', driverRoutes);
 app.use('/api/permissions', permissionRoutes);
 app.use('/api/vehicles', vehicleRoutes);
+app.use('/api/trips', tripRoutes);
+app.use('/api/maintenance', maintenanceRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
