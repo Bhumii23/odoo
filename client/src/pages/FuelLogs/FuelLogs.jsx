@@ -5,10 +5,10 @@ import { Plus, Search, Edit2, Trash2, FileSpreadsheet, X } from 'lucide-react';
 // 1. FuelHeader Component
 function FuelHeader({ onLogClick, onExportClick }) {
   return (
-    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 rounded-[28px] border border-[#e9dfd7] bg-[#fcf8f3]/90 p-5 shadow-[0_20px_60px_-30px_rgba(76,54,97,0.32)] backdrop-blur">
       <div>
-        <h1 className="text-xl font-bold tracking-tight text-slate-100">Fuel Logs</h1>
-        <p className="text-xs text-slate-400 mt-1">
+        <h1 className="text-xl font-semibold tracking-tight text-slate-800">Fuel Logs</h1>
+        <p className="text-xs text-slate-500 mt-1">
           Record, track, and monitor refueling entries for your transit fleet.
         </p>
       </div>
@@ -16,14 +16,14 @@ function FuelHeader({ onLogClick, onExportClick }) {
       <div className="flex items-center space-x-2">
         <button
           onClick={onExportClick}
-          className="flex items-center space-x-1.5 bg-[#1E293B] hover:bg-slate-800 text-slate-300 border border-slate-800 hover:text-white px-3 py-1.5 rounded text-xs font-semibold transition-colors cursor-pointer"
+          className="flex items-center space-x-1.5 bg-white/80 hover:bg-[#f4ecf8] text-slate-700 border border-[#e7d9e8] hover:text-[#5e3d75] px-3 py-1.5 rounded-2xl text-xs font-semibold transition-colors cursor-pointer shadow-sm"
         >
           <FileSpreadsheet size={13} />
           <span>Export CSV</span>
         </button>
         <button
           onClick={onLogClick}
-          className="flex items-center space-x-1.5 bg-[#714B67] hover:bg-[#4a3048] text-white px-3.5 py-1.5 rounded text-xs font-semibold transition-colors cursor-pointer"
+          className="flex items-center space-x-1.5 bg-[#7c5a9f] hover:bg-[#5e3d75] text-white px-3.5 py-1.5 rounded-2xl text-xs font-semibold transition-colors cursor-pointer shadow-sm"
         >
           <Plus size={13} />
           <span>Log Fuel</span>
@@ -36,15 +36,15 @@ function FuelHeader({ onLogClick, onExportClick }) {
 // 2. FuelSearch Component
 function FuelSearch({ value, onChange }) {
   return (
-    <div className="bg-[#1E293B] p-4 border border-slate-800/80 rounded-lg flex items-center justify-between mb-4">
+    <div className="bg-[#fcf8f3]/90 p-4 border border-[#e9dfd7] rounded-[22px] flex items-center justify-between mb-4 shadow-sm backdrop-blur">
       <div className="relative w-full max-w-xs">
-        <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-slate-500" />
+        <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-slate-400" />
         <input
           type="text"
           placeholder="Search fuel logs..."
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full bg-[#0F172A] border border-slate-800 text-slate-300 text-xs rounded pl-8 pr-3 py-2 focus:outline-none placeholder-slate-600 focus:border-slate-700 transition-colors"
+          className="w-full bg-white/80 border border-[#e7d9e8] text-slate-700 text-xs rounded-2xl pl-8 pr-3 py-2 focus:outline-none placeholder-slate-400 focus:border-[#c7abda] transition-colors"
         />
       </div>
     </div>
@@ -89,7 +89,7 @@ function FuelTableRow({ log, onDelete }) {
 // 4. FuelTable Component
 function FuelTable({ logs, onDelete }) {
   return (
-    <div className="bg-[#1E293B] border border-slate-800/80 rounded-lg overflow-hidden">
+    <div className="bg-[#fcf8f3]/90 border border-[#e9dfd7] rounded-[24px] overflow-hidden shadow-[0_12px_40px_-20px_rgba(76,54,97,0.22)] backdrop-blur">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
@@ -123,7 +123,7 @@ function FuelTable({ logs, onDelete }) {
       </div>
 
       {/* Dummy Pagination */}
-      <div className="px-5 py-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-550 bg-slate-900/10">
+      <div className="px-5 py-4 border-t border-[#e9dfd7] flex items-center justify-between text-xs text-slate-500 bg-[#f7efe8]/70">
         <span>Showing 1-{logs.length} of {logs.length} entries</span>
         <div className="flex items-center space-x-1.5">
           <button 
@@ -250,8 +250,8 @@ export default function FuelLogs() {
           <div className="bg-[#1E293B] border border-slate-800 rounded-lg max-w-lg w-full overflow-hidden shadow-2xl flex flex-col">
             
             {/* Modal Header */}
-            <div className="px-5 py-4 border-b border-slate-800 flex justify-between items-center bg-slate-900/10">
-              <h3 className="text-sm font-semibold text-slate-200">Log Refueling Entry</h3>
+            <div className="px-5 py-4 border-b border-[#e9dfd7] flex justify-between items-center bg-[#f7efe8]/70">
+              <h3 className="text-sm font-semibold text-slate-800">Log Refueling Entry</h3>
               <button 
                 onClick={() => setIsModalOpen(false)}
                 className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
@@ -368,7 +368,7 @@ export default function FuelLogs() {
               </div>
 
               {/* Modal Actions */}
-              <div className="pt-3 border-t border-slate-800 flex justify-end space-x-2 bg-slate-900/10">
+              <div className="pt-3 border-t border-[#e9dfd7] flex justify-end space-x-2 bg-[#f7efe8]/70">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}

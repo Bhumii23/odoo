@@ -65,42 +65,41 @@ export default function Analytics() {
 
   return (
     <div className="space-y-6 text-left">
-      {/* Header section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight text-slate-100">Analytics</h1>
-          <p className="text-xs text-slate-400 mt-1">
-            System performance dashboard, costs, and fleet optimization metrics.
-          </p>
-        </div>
+      <div className="rounded-[28px] border border-[#e9dfd7] bg-[#fcf8f3]/90 p-5 sm:p-6 shadow-[0_20px_60px_-30px_rgba(76,54,97,0.32)] backdrop-blur">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h1 className="text-xl font-semibold tracking-tight text-slate-800">Analytics</h1>
+            <p className="text-xs text-slate-500 mt-1">
+              System performance dashboard, costs, and fleet optimization metrics.
+            </p>
+          </div>
 
-        {/* Export Buttons Section */}
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={handleExportCSV}
-            className="flex items-center space-x-1.5 bg-[#1E293B] hover:bg-slate-800 text-slate-300 border border-slate-800 hover:text-white px-3 py-1.5 rounded text-xs font-semibold transition-colors cursor-pointer"
-          >
-            <FileSpreadsheet size={13} />
-            <span>Export CSV</span>
-          </button>
-          <button
-            onClick={handleExportPDF}
-            className="flex items-center space-x-1.5 bg-[#1E293B] hover:bg-slate-800 text-slate-300 border border-slate-800 hover:text-white px-3 py-1.5 rounded text-xs font-semibold transition-colors cursor-pointer"
-          >
-            <FileText size={13} />
-            <span>Export PDF</span>
-          </button>
-          <button
-            onClick={handleDownloadReport}
-            className="flex items-center space-x-1.5 bg-[#714B67] hover:bg-[#4a3048] text-white px-3.5 py-1.5 rounded text-xs font-semibold transition-colors cursor-pointer"
-          >
-            <Download size={13} />
-            <span>Download Report</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={handleExportCSV}
+              className="flex items-center space-x-1.5 bg-white/80 hover:bg-[#f4ecf8] text-slate-700 border border-[#e7d9e8] hover:text-[#5e3d75] px-3 py-1.5 rounded-2xl text-xs font-semibold transition-colors cursor-pointer shadow-sm"
+            >
+              <FileSpreadsheet size={13} />
+              <span>Export CSV</span>
+            </button>
+            <button
+              onClick={handleExportPDF}
+              className="flex items-center space-x-1.5 bg-white/80 hover:bg-[#f4ecf8] text-slate-700 border border-[#e7d9e8] hover:text-[#5e3d75] px-3 py-1.5 rounded-2xl text-xs font-semibold transition-colors cursor-pointer shadow-sm"
+            >
+              <FileText size={13} />
+              <span>Export PDF</span>
+            </button>
+            <button
+              onClick={handleDownloadReport}
+              className="flex items-center space-x-1.5 bg-[#7c5a9f] hover:bg-[#5e3d75] text-white px-3.5 py-1.5 rounded-2xl text-xs font-semibold transition-colors cursor-pointer shadow-sm"
+            >
+              <Download size={13} />
+              <span>Download Report</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Centralized Filter Console */}
       <FilterBar filters={filters} setFilters={setFilters} />
 
       {/* High-density KPI Cards Grid */}

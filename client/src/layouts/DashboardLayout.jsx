@@ -11,8 +11,7 @@ export default function DashboardLayout({
   children,
 }) {
   return (
-    <div className="h-screen w-screen bg-[#0F172A] text-slate-100 flex overflow-hidden">
-      {/* Sidebar - remains in standard flex layout, avoiding fixed offsets */}
+    <div className="min-h-screen w-screen bg-transparent text-slate-800 flex overflow-hidden">
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -20,17 +19,13 @@ export default function DashboardLayout({
         setIsCollapsed={setIsCollapsed}
       />
 
-      {/* Main Column */}
       <div className="flex-1 flex flex-col h-full overflow-hidden">
-        {/* Top Header */}
         <Header activeTab={activeTab} />
 
-        {/* Scrollable Viewport */}
-        <div className="flex-1 overflow-y-auto flex flex-col bg-[#0F172A]">
-          <main className="flex-1 p-6 md:p-8">
-            {children}
+        <div className="flex-1 overflow-y-auto flex flex-col bg-transparent">
+          <main className="flex-1 p-4 sm:p-6 lg:p-8">
+            <div className="mx-auto max-w-7xl">{children}</div>
           </main>
-          {/* Footer at the bottom of the scroll view */}
           <Footer />
         </div>
       </div>
