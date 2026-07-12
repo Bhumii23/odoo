@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import DashboardLayout from './layouts/DashboardLayout';
+import Analytics from './pages/Analytics/Analytics';
 import { 
   Plus, 
   Search, 
@@ -7,7 +8,7 @@ import {
 } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('fleet');
+  const [activeTab, setActiveTab] = useState('analytics'); // Set Default tab to Analytics to showcase the new feature
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   // States for Fleet Page Filters
@@ -96,6 +97,9 @@ export default function App() {
   // Content Renderer based on selected Tab
   const renderContent = () => {
     switch (activeTab) {
+      case 'analytics':
+        return <Analytics />;
+
       case 'dashboard':
         return (
           <div className="space-y-6 text-left">
