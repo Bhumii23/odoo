@@ -8,6 +8,7 @@ import tripRoutes from './routes/trip.routes';
 import maintenanceRoutes from './routes/maintenance.routes';
 import expenseRoutes from './routes/expense.routes';
 import fuelRoutes from './routes/fuel.routes';
+import analyticsRoutes from './routes/analytics.routes';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -23,6 +24,7 @@ app.use('/api/trips', tripRoutes);
 app.use('/api/maintenance', maintenanceRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/fuel', fuelRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });

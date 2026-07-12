@@ -8,21 +8,22 @@ import {
   updateSafetyScore 
 } from '../controllers/driver.controller';
 import { authenticate } from '../middleware/authenticate';
-import { authorize } from '../middleware/authorize';
+import { requirePermission } from '../middleware/requirePermission';
+import { Module } from '@prisma/client';
 
 const router = Router();
 
 // Require authentication for all driver routes
 router.use(authenticate);
 
-// General Driver CRUD (accessible to FLEET_MANAGER and DISPATCHER)
-router.get('/', authorize(['FLEET_MANAGER', 'DISPATCHER', 'SAFETY_OFFICER']), getDrivers);
-router.get('/:id', authorize(['FLEET_MANAGER', 'DISPATCHER', 'SAFETY_OFFICER']), getDriverById);
-router.post('/', authorize(['FLEET_MANAGER']), createDriver);
-router.put('/:id', authorize(['FLEET_MANAGER']), updateDriver);
-router.delete('/:id', authorize(['FLEET_MANAGER']), deleteDriver);
+// General Driver CRUD
+router.get('/', requirePermission(Module.DRIVERS, 'VIEW'), getDrivers);
+router.get('/:id', requirePermission(Module.DRIVERS, 'VIEW'), getDriverById);
+router.post('/', requirePermission(Module.DRIVERS, 'FULL'), createDriver);
+router.put('/:id', requirePermission(Module.DRIVERS, 'FULL'), updateDriver);
+router.delete('/:id', requirePermission(Module.DRIVERS, 'FULL'), deleteDriver);
 
-// Safety Score endpoint (strictly for SAFETY_OFFICER)
-router.put('/:id/safety-score', authorize(['SAFETY_OFFICER']), updateSafetyScore);
+// Safety Score endpoint (strictly for SAFETY_OFFICER handled in controller)
+router.put('/:id/safety-score', requirePermission(Module.DRIVERS, 'FULL'), updateSafetyScore);
 
 export default router;

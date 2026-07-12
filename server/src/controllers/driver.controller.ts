@@ -155,6 +155,10 @@ export const deleteDriver = async (req: Request, res: Response) => {
  */
 export const updateSafetyScore = async (req: Request, res: Response) => {
   try {
+    if (req.user?.role !== 'SAFETY_OFFICER') {
+      return res.status(403).json({ error: 'Forbidden: Only SAFETY_OFFICER can manually update safety scores' });
+    }
+
     const id = Number(req.params.id);
     if (isNaN(id)) return res.status(400).json({ error: 'Invalid ID format' });
     const { score } = req.body;
