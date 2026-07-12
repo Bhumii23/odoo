@@ -9,7 +9,7 @@ const statusClasses = {
   Cancelled: 'bg-[#FDECEC] text-[#B65055]',
 };
 
-export default function TripCard({ trip, onEdit, onCancel, onComplete }) {
+export default function TripCard({ trip, onEdit, onCancel, onComplete, permission }) {
   return (
     <motion.article
       initial={{ opacity: 0, y: 16 }}
@@ -46,29 +46,31 @@ export default function TripCard({ trip, onEdit, onCancel, onComplete }) {
         </div>
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center gap-2">
-        <button
-          onClick={onEdit}
-          className="inline-flex items-center gap-2 rounded-full border border-[#E9E2EC] bg-[#FCFAFD] px-3 py-2 text-sm font-medium text-[#4B3348] transition hover:border-[#DCCFD9]"
-        >
-          <Edit3 size={14} />
-          Edit
-        </button>
-        <button
-          onClick={onCancel}
-          className="inline-flex items-center gap-2 rounded-full border border-[#E9E2EC] bg-[#FCFAFD] px-3 py-2 text-sm font-medium text-[#4B3348] transition hover:border-[#DCCFD9]"
-        >
-          <XCircle size={14} />
-          Cancel
-        </button>
-        <button
-          onClick={onComplete}
-          className="inline-flex items-center gap-2 rounded-full bg-[#5D3F58] px-3 py-2 text-sm font-medium text-white transition hover:bg-[#4B3348]"
-        >
-          <CheckCircle2 size={14} />
-          Complete
-        </button>
-      </div>
+      {permission === 'edit' && (
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <button
+            onClick={onEdit}
+            className="inline-flex items-center gap-2 rounded-full border border-[#E9E2EC] bg-[#FCFAFD] px-3 py-2 text-sm font-medium text-[#4B3348] transition hover:border-[#DCCFD9]"
+          >
+            <Edit3 size={14} />
+            Edit
+          </button>
+          <button
+            onClick={onCancel}
+            className="inline-flex items-center gap-2 rounded-full border border-[#E9E2EC] bg-[#FCFAFD] px-3 py-2 text-sm font-medium text-[#4B3348] transition hover:border-[#DCCFD9]"
+          >
+            <XCircle size={14} />
+            Cancel
+          </button>
+          <button
+            onClick={onComplete}
+            className="inline-flex items-center gap-2 rounded-full bg-[#5D3F58] px-3 py-2 text-sm font-medium text-white transition hover:bg-[#4B3348]"
+          >
+            <CheckCircle2 size={14} />
+            Complete
+          </button>
+        </div>
+      )}
     </motion.article>
   );
 }

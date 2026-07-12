@@ -1,4 +1,5 @@
 import React from 'react';
+import { permissions } from '../config/permissions';
 import {
   LayoutDashboard,
   Truck,
@@ -23,7 +24,15 @@ const navItems = [
   { id: 'settings', name: 'Settings', icon: Settings },
 ];
 
-export default function Navbar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
+export default function Navbar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed, user }) {
+  const userRole = user?.role || 'DISPATCHER';
+  const rolePermissions = permissions[userRole] || {};
+
+  const filteredNavItems = navItems.filter((item) => {
+    const permKey = item.id === 'fuel-expenses' ? 'fuelExpenses' : item.id;
+    return rolePermissions[permKey] && rolePermissions[permKey] !== 'none';
+  });
+
   return (
     <aside
       className={`h-full bg-[#fcf8f3]/90 backdrop-blur-xl border-r border-[#e9dfd7] text-slate-700 flex flex-col transition-all duration-300 ease-in-out flex-shrink-0 shadow-[12px_0_40px_-20px_rgba(124,90,159,0.24)] ${
@@ -48,7 +57,7 @@ export default function Navbar({ activeTab, setActiveTab, isCollapsed, setIsColl
       </div>
 
       <nav className="flex-1 py-4 overflow-y-auto space-y-1 px-3">
-        {navItems.map((item) => {
+        {filteredNavItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
           return (

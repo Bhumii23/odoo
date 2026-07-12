@@ -8,6 +8,7 @@ export default function DashboardLayout({
   setActiveTab,
   isCollapsed,
   setIsCollapsed,
+  user,
   children,
 }) {
   return (
@@ -17,6 +18,7 @@ export default function DashboardLayout({
         setActiveTab={setActiveTab}
         isCollapsed={isCollapsed}
         setIsCollapsed={setIsCollapsed}
+        user={user}
       />
 
       <div className="flex-1 flex flex-col h-full overflow-hidden">
