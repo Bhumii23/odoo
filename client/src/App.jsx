@@ -4,6 +4,9 @@ import Analytics from './pages/Analytics/Analytics';
 import FuelLogs from './pages/FuelLogs/FuelLogs';
 import Expenses from './pages/Expenses/Expenses';
 import DriverManagement from './pages/DriverManagement/DriverManagement';
+import TripDispatcher from './pages/TripDispatcher/TripDispatcher';
+import Maintenance from './pages/Maintenance/Maintenance';
+import Settings from './pages/Settings/Settings';
 import { 
   Plus, 
   Search, 
@@ -108,6 +111,15 @@ export default function App() {
 
       case 'drivers':
         return <DriverManagement />;
+
+      case 'trips':
+        return <TripDispatcher />;
+
+      case 'maintenance':
+        return <Maintenance />;
+
+      case 'settings':
+        return <Settings />;
 
       case 'fuel-expenses':
         return (
