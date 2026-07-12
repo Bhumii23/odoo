@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { initialDrivers } from '../../data/driversData';
 import DriverHeader from '../../components/drivers/DriverHeader';
 import DriverFilters from '../../components/drivers/DriverFilters';
@@ -122,19 +123,26 @@ export default function DriverManagement() {
       />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-        {kpiCards.map((card) => {
+        {kpiCards.map((card, index) => {
           const Icon = card.icon;
           return (
-            <div key={card.title} className="group rounded-[24px] border border-[#E9E2EC] bg-white/90 p-4 shadow-[0_16px_48px_-28px_rgba(93,63,88,0.22)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_20px_44px_-24px_rgba(93,63,88,0.3)]">
-              <div className={`flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${card.tone} text-[#5D3F58]`}>
+            <motion.div
+              key={card.title}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05, duration: 0.25 }}
+              whileHover={{ y: -4, scale: 1.01 }}
+              className="group rounded-[24px] border border-[#ece7ef] bg-white/90 p-4 shadow-[0_20px_70px_-38px_rgba(15,23,42,0.3)] backdrop-blur"
+            >
+              <div className={`flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${card.tone} text-slate-700`}>
                 <Icon size={18} />
               </div>
-              <p className="mt-4 text-sm font-medium text-[#7A7180]">{card.title}</p>
+              <p className="mt-4 text-sm font-medium text-slate-500">{card.title}</p>
               <div className="mt-1 flex items-baseline justify-between gap-2">
-                <span className="text-2xl font-semibold text-[#2E2331]">{card.value}</span>
-                <span className="text-xs font-semibold text-[#5D3F58]">{card.hint}</span>
+                <span className="text-2xl font-semibold text-slate-900">{card.value}</span>
+                <span className="text-xs font-semibold text-[#6d28d9]">{card.hint}</span>
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>
@@ -142,122 +150,133 @@ export default function DriverManagement() {
       <DriverFilters filters={filters} setFilters={setFilters} />
 
       {isLoading ? (
-        <div className="rounded-[28px] border border-[#E9E2EC] bg-white/90 p-6 shadow-[0_18px_50px_-28px_rgba(93,63,88,0.24)]">
+        <div className="rounded-[28px] border border-[#ece7ef] bg-white/90 p-6 shadow-[0_18px_60px_-40px_rgba(15,23,42,0.3)]">
           <div className="grid gap-3">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="flex items-center gap-4 rounded-2xl border border-[#F1EAF4] bg-[#FCFAFD] p-4">
-                <div className="h-10 w-10 animate-pulse rounded-2xl bg-[#E9DFF1]" />
+              <div key={i} className="flex items-center gap-4 rounded-2xl border border-[#f1ebf5] bg-[#fefcff] p-4">
+                <div className="h-10 w-10 animate-pulse rounded-2xl bg-[#efe7ff]" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-3 w-1/3 animate-pulse rounded-full bg-[#E9DFF1]" />
-                  <div className="h-3 w-2/3 animate-pulse rounded-full bg-[#F2EAF5]" />
+                  <div className="h-3 w-1/3 animate-pulse rounded-full bg-[#efe7ff]" />
+                  <div className="h-3 w-2/3 animate-pulse rounded-full bg-[#f5f2fa]" />
                 </div>
               </div>
             ))}
           </div>
         </div>
       ) : (
-        <DriverTable
-          drivers={filteredDrivers}
-          onEdit={(id) => alert(`Edit trigger for Driver ID: ${id}`)}
-          onDelete={handleDelete}
-        />
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+          <DriverTable
+            drivers={filteredDrivers}
+            onEdit={(id) => alert(`Edit trigger for Driver ID: ${id}`)}
+            onDelete={handleDelete}
+          />
+        </motion.div>
       )}
 
-      {/* Add Driver Dialog Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#2E2331]/50 p-4 backdrop-blur-sm">
-          <div className="flex max-w-lg w-full flex-col overflow-hidden rounded-[24px] border border-[#E9E2EC] bg-white shadow-[0_28px_80px_-30px_rgba(46,35,49,0.5)]">
-            <div className="flex items-center justify-between border-b border-[#E9E2EC] bg-[#FCFAFD] px-5 py-4">
-              <div>
-                <h3 className="text-sm font-semibold text-[#2E2331]">Register New Driver</h3>
-                <p className="mt-0.5 text-xs text-[#7A7180]">Add a driver securely to the registry.</p>
-              </div>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="rounded-full border border-[#E9E2EC] bg-white p-2 text-[#7A7180] transition-all duration-200 hover:border-[#DCCFD9] hover:bg-[#F8F2F8] hover:text-[#5D3F58]"
-              >
-                <X size={16} />
-              </button>
-            </div>
-
-            {/* Modal Form */}
-            <form onSubmit={handleFormSubmit} className="p-5 flex-1 overflow-y-auto space-y-4 text-left">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col">
-                  <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#7A7180]">Driver Name *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. John Smith"
-                    value={form.name}
-                    onChange={(e) => setForm({...form, name: e.target.value})}
-                    className="rounded-2xl border border-[#E9E2EC] bg-[#FCFAFD] px-3 py-2.5 text-sm text-[#2E2331] transition-all duration-200 focus:border-[#DCCFD9] focus:outline-none focus:ring-4 focus:ring-[#F4EAF5]"
-                  />
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/20 p-4 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 16, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 8, scale: 0.98 }}
+              className="flex w-full max-w-2xl flex-col overflow-hidden rounded-[28px] border border-[#ece7ef] bg-white shadow-[0_30px_90px_-30px_rgba(15,23,42,0.35)]"
+            >
+              <div className="flex items-center justify-between border-b border-[#ece7ef] bg-[#fcfbfe] px-5 py-4">
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-slate-400">Registry</p>
+                  <h3 className="text-base font-semibold text-slate-900">Register new driver</h3>
                 </div>
-                <div className="flex flex-col">
-                  <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#7A7180]">Employee ID *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. DRV009"
-                    value={form.employeeId}
-                    onChange={(e) => setForm({...form, employeeId: e.target.value})}
-                    className="rounded-2xl border border-[#E9E2EC] bg-[#FCFAFD] px-3 py-2.5 text-sm text-[#2E2331] transition-all duration-200 focus:border-[#DCCFD9] focus:outline-none focus:ring-4 focus:ring-[#F4EAF5]"
-                  />
-                </div>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="rounded-full border border-[#ece7ef] bg-white p-2 text-slate-500 transition-all duration-200 hover:border-[#d9cceb] hover:text-[#6d28d9]"
+                >
+                  <X size={16} />
+                </button>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col">
-                  <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#7A7180]">License Number *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. DL-12345"
-                    value={form.licenseNumber}
-                    onChange={(e) => setForm({...form, licenseNumber: e.target.value})}
-                    className="rounded-2xl border border-[#E9E2EC] bg-[#FCFAFD] px-3 py-2.5 text-sm text-[#2E2331] transition-all duration-200 focus:border-[#DCCFD9] focus:outline-none focus:ring-4 focus:ring-[#F4EAF5]"
-                  />
+              <form onSubmit={handleFormSubmit} className="flex-1 space-y-4 overflow-y-auto p-5 text-left">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="flex flex-col">
+                    <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">Driver Name *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. John Smith"
+                      value={form.name}
+                      onChange={(e) => setForm({...form, name: e.target.value})}
+                      className="rounded-2xl border border-[#ece7ef] bg-[#fcfbfe] px-3 py-2.5 text-sm text-slate-900 transition-all duration-200 focus:border-[#d9cceb] focus:outline-none focus:ring-4 focus:ring-[#f4eaff]"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">Employee ID *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. DRV009"
+                      value={form.employeeId}
+                      onChange={(e) => setForm({...form, employeeId: e.target.value})}
+                      className="rounded-2xl border border-[#ece7ef] bg-[#fcfbfe] px-3 py-2.5 text-sm text-slate-900 transition-all duration-200 focus:border-[#d9cceb] focus:outline-none focus:ring-4 focus:ring-[#f4eaff]"
+                    />
+                  </div>
                 </div>
-                <div className="flex flex-col">
-                  <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#7A7180]">License Category *</label>
-                  <select
-                    value={form.licenseCategory}
-                    onChange={(e) => setForm({...form, licenseCategory: e.target.value})}
-                    className="rounded-2xl border border-[#E9E2EC] bg-[#FCFAFD] px-3 py-2.5 text-sm text-[#2E2331] transition-all duration-200 focus:border-[#DCCFD9] focus:outline-none focus:ring-4 focus:ring-[#F4EAF5]"
-                  >
-                    <option value="LMV">LMV (Light Motor)</option>
-                    <option value="HMV">HMV (Heavy Motor)</option>
-                    <option value="HGV">HGV (Heavy Goods)</option>
-                    <option value="MCWG">MCWG (Motorcycle)</option>
-                  </select>
-                </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col">
-                  <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#7A7180]">Phone Number</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. +91 99999 88888"
-                    value={form.phoneNumber}
-                    onChange={(e) => setForm({...form, phoneNumber: e.target.value})}
-                    className="rounded-2xl border border-[#E9E2EC] bg-[#FCFAFD] px-3 py-2.5 text-sm text-[#2E2331] transition-all duration-200 focus:border-[#DCCFD9] focus:outline-none focus:ring-4 focus:ring-[#F4EAF5]"
-                  />
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="flex flex-col">
+                    <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">License Number *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. DL-12345"
+                      value={form.licenseNumber}
+                      onChange={(e) => setForm({...form, licenseNumber: e.target.value})}
+                      className="rounded-2xl border border-[#ece7ef] bg-[#fcfbfe] px-3 py-2.5 text-sm text-slate-900 transition-all duration-200 focus:border-[#d9cceb] focus:outline-none focus:ring-4 focus:ring-[#f4eaff]"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">License Category *</label>
+                    <select
+                      value={form.licenseCategory}
+                      onChange={(e) => setForm({...form, licenseCategory: e.target.value})}
+                      className="rounded-2xl border border-[#ece7ef] bg-[#fcfbfe] px-3 py-2.5 text-sm text-slate-900 transition-all duration-200 focus:border-[#d9cceb] focus:outline-none focus:ring-4 focus:ring-[#f4eaff]"
+                    >
+                      <option value="LMV">LMV (Light Motor)</option>
+                      <option value="HMV">HMV (Heavy Motor)</option>
+                      <option value="HGV">HGV (Heavy Goods)</option>
+                      <option value="MCWG">MCWG (Motorcycle)</option>
+                    </select>
+                  </div>
                 </div>
-                <div className="flex flex-col">
-                  <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#7A7180]">License Expiry *</label>
-                  <input
-                    type="date"
-                    required
-                    value={form.licenseExpiry}
-                    onChange={(e) => setForm({...form, licenseExpiry: e.target.value})}
-                    className="rounded-2xl border border-[#E9E2EC] bg-[#FCFAFD] px-3 py-2.5 text-sm text-[#2E2331] transition-all duration-200 focus:border-[#DCCFD9] focus:outline-none focus:ring-4 focus:ring-[#F4EAF5]"
-                  />
-                </div>
-              </div>
 
-              <div className="grid grid-cols-3 gap-4">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="flex flex-col">
+                    <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">Phone Number</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. +91 99999 88888"
+                      value={form.phoneNumber}
+                      onChange={(e) => setForm({...form, phoneNumber: e.target.value})}
+                      className="rounded-2xl border border-[#ece7ef] bg-[#fcfbfe] px-3 py-2.5 text-sm text-slate-900 transition-all duration-200 focus:border-[#d9cceb] focus:outline-none focus:ring-4 focus:ring-[#f4eaff]"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">License Expiry *</label>
+                    <input
+                      type="date"
+                      required
+                      value={form.licenseExpiry}
+                      onChange={(e) => setForm({...form, licenseExpiry: e.target.value})}
+                      className="rounded-2xl border border-[#ece7ef] bg-[#fcfbfe] px-3 py-2.5 text-sm text-slate-900 transition-all duration-200 focus:border-[#d9cceb] focus:outline-none focus:ring-4 focus:ring-[#f4eaff]"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-3">
                 <div className="flex flex-col col-span-2">
                   <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#7A7180]">Assigned Vehicle</label>
                   <select
@@ -286,40 +305,40 @@ export default function DriverManagement() {
                 </div>
               </div>
 
-              <div className="flex flex-col">
-                <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#7A7180]">Status</label>
-                <select
-                  value={form.status}
-                  onChange={(e) => setForm({...form, status: e.target.value})}
-                  className="rounded-2xl border border-[#E9E2EC] bg-[#FCFAFD] px-3 py-2.5 text-sm text-[#2E2331] transition-all duration-200 focus:border-[#DCCFD9] focus:outline-none focus:ring-4 focus:ring-[#F4EAF5]"
-                >
-                  <option value="Available">Available</option>
-                  <option value="On Trip">On Trip</option>
-                  <option value="Off Duty">Off Duty</option>
-                  <option value="Suspended">Suspended</option>
-                </select>
-              </div>
+                <div className="flex flex-col">
+                  <label className="mb-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">Status</label>
+                  <select
+                    value={form.status}
+                    onChange={(e) => setForm({...form, status: e.target.value})}
+                    className="rounded-2xl border border-[#ece7ef] bg-[#fcfbfe] px-3 py-2.5 text-sm text-slate-900 transition-all duration-200 focus:border-[#d9cceb] focus:outline-none focus:ring-4 focus:ring-[#f4eaff]"
+                  >
+                    <option value="Available">Available</option>
+                    <option value="On Trip">On Trip</option>
+                    <option value="Off Duty">Off Duty</option>
+                    <option value="Suspended">Suspended</option>
+                  </select>
+                </div>
 
-              {/* Modal Actions */}
-              <div className="flex justify-end gap-2 border-t border-[#E9E2EC] bg-[#FCFAFD] px-1 py-3">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="rounded-2xl border border-[#E9E2EC] bg-white px-4 py-2 text-sm font-semibold text-[#4B3348] transition-all duration-200 hover:border-[#DCCFD9] hover:bg-[#F8F2F8]"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="rounded-2xl bg-gradient-to-r from-[#5D3F58] to-[#4B3348] px-4 py-2 text-sm font-semibold text-white shadow-[0_12px_30px_-16px_rgba(93,63,88,0.7)] transition-all duration-200 hover:-translate-y-0.5 hover:from-[#4B3348] hover:to-[#3D263A]"
-                >
-                  Add Driver
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+                <div className="flex justify-end gap-2 border-t border-[#ece7ef] bg-[#fcfbfe] px-1 py-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="rounded-2xl border border-[#ece7ef] bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition-all duration-200 hover:border-[#d9cceb] hover:bg-[#f8f6f9]"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="rounded-2xl bg-gradient-to-r from-[#7c3aed] to-[#a78bfa] px-4 py-2 text-sm font-semibold text-white shadow-[0_15px_34px_-18px_rgba(109,40,217,0.6)] transition-all duration-200 hover:-translate-y-0.5"
+                  >
+                    Add Driver
+                  </button>
+                </div>
+              </form>
+          </motion.div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </div>
   );
 }

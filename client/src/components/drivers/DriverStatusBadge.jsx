@@ -6,20 +6,20 @@ export default function DriverStatusBadge({ status, licenseExpiry }) {
     const isExpired = !Number.isNaN(parsedExpiry.getTime()) && parsedExpiry < new Date(new Date().setHours(0, 0, 0, 0));
 
     if (isExpired) {
-      return 'bg-amber-100 text-amber-700 border border-amber-200';
+      return 'bg-amber-50 text-amber-700 border border-amber-200';
     }
 
     switch (statusState) {
       case 'Available':
-        return 'bg-emerald-100 text-emerald-700 border border-emerald-200';
+        return 'bg-emerald-50 text-emerald-700 border border-emerald-200';
       case 'On Trip':
-        return 'bg-sky-100 text-sky-700 border border-sky-200';
+        return 'bg-sky-50 text-sky-700 border border-sky-200';
       case 'Off Duty':
         return 'bg-slate-100 text-slate-700 border border-slate-200';
       case 'Suspended':
-        return 'bg-rose-100 text-rose-700 border border-rose-200';
+        return 'bg-rose-50 text-rose-700 border border-rose-200';
       default:
-        return 'bg-[#F4EAF5] text-[#5D3F58] border border-[#E9E2EC]';
+        return 'bg-[#f4eaff] text-[#6d28d9] border border-[#efe7ff]';
     }
   };
 

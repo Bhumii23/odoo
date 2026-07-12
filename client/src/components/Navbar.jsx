@@ -9,7 +9,7 @@ import {
   BarChart2,
   Settings,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
 } from 'lucide-react';
 
 const navItems = [
@@ -26,53 +26,60 @@ const navItems = [
 export default function Navbar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) {
   return (
     <aside
-      className={`h-full bg-[#fcf8f3]/90 backdrop-blur-xl border-r border-[#e9dfd7] text-slate-700 flex flex-col transition-all duration-300 ease-in-out flex-shrink-0 shadow-[12px_0_40px_-20px_rgba(124,90,159,0.24)] ${
-        isCollapsed ? 'w-20' : 'w-60'
+      className={`flex h-full flex-shrink-0 flex-col rounded-[28px] border border-[#ece7ef] bg-white/90 p-2 shadow-[0_20px_80px_-44px_rgba(15,23,42,0.3)] backdrop-blur-xl transition-all duration-300 ${
+        isCollapsed ? 'w-[78px]' : 'w-[240px]'
       }`}
     >
-      <div className="h-16 flex items-center justify-between px-4 border-b border-[#efe4da] bg-gradient-to-r from-[#f7efe8] to-[#f7ebf7]">
-        {!isCollapsed && (
-          <div className="flex items-center space-x-2 pl-2">
-            <span className="text-sm font-bold tracking-[0.24em] text-[#5e3d75] uppercase select-none">
-              TransitOps
-            </span>
+      <div className="flex items-center justify-between px-2 py-2">
+        {!isCollapsed ? (
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#7c3aed] to-[#a78bfa] text-sm font-semibold text-white shadow-lg shadow-purple-200">
+              T
+            </div>
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-slate-400">Fleet OS</p>
+              <p className="text-sm font-semibold text-slate-900">TransitOps</p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#7c3aed] to-[#a78bfa] text-sm font-semibold text-white shadow-lg shadow-purple-200">
+            T
           </div>
         )}
+
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-1.5 rounded-xl bg-white/80 border border-[#e7d9e8] text-[#6b3d7a] hover:bg-[#f4ecf8] hover:text-[#5e3d75] transition-colors duration-200 ml-auto shadow-sm"
+          className="ml-auto rounded-xl border border-[#ece7ef] bg-[#f9f7fb] p-2 text-slate-500 transition-all duration-200 hover:border-[#d9cceb] hover:text-[#6d28d9]"
           aria-label={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
         >
-          {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+          {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
         </button>
       </div>
 
-      <nav className="flex-1 py-4 overflow-y-auto space-y-1 px-3">
+      <nav className="mt-3 flex-1 space-y-1 overflow-y-auto px-1 py-2">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
+
           return (
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center relative rounded-2xl px-3 py-2.5 transition-all duration-150 group ${
+              className={`group relative flex w-full items-center rounded-2xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+                isCollapsed ? 'justify-center' : 'justify-start gap-3'
+              } ${
                 isActive
-                  ? 'bg-[#f4ecf8] text-[#5e3d75] font-semibold shadow-sm before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:bg-[#7c5a9f] before:rounded-r'
-                  : 'hover:bg-[#f7f0f8] hover:text-[#4b3261] text-slate-500'
-              } ${isCollapsed ? 'justify-center' : 'justify-start space-x-3'}`}
+                  ? 'bg-gradient-to-r from-[#f4eaff] to-[#efe7ff] text-[#6d28d9] shadow-[0_12px_30px_-18px_rgba(109,40,217,0.55)]'
+                  : 'text-slate-600 hover:bg-[#f8f6f9] hover:text-slate-900'
+              }`}
             >
-              <Icon size={18} className={isActive ? 'text-[#7c5a9f]' : 'text-slate-500 group-hover:text-[#6b3d7a]'} />
-
-              {!isCollapsed && (
-                <span className="text-xs font-medium tracking-wide">
-                  {item.name}
-                </span>
-              )}
+              <Icon size={18} className="shrink-0" />
+              {!isCollapsed && <span>{item.name}</span>}
 
               {isCollapsed && (
-                <div className="absolute left-full ml-3 px-2 py-1 bg-[#fffaf5] border border-[#e9dfd7] text-[#5e3d75] text-[10px] rounded-xl whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-150 z-50 shadow-md">
+                <span className="pointer-events-none absolute left-full ml-3 whitespace-nowrap rounded-full border border-[#ece7ef] bg-white px-3 py-1.5 text-[11px] font-semibold text-slate-600 opacity-0 shadow-lg transition-all duration-200 group-hover:opacity-100">
                   {item.name}
-                </div>
+                </span>
               )}
             </button>
           );

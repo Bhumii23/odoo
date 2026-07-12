@@ -4,18 +4,15 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto py-4 border-t border-[#e9dfd7] px-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 bg-[#fcf8f3]/70 backdrop-blur-sm">
-      <div className="flex items-center space-x-2.5 mb-2 sm:mb-0">
-        <span className="relative flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+    <footer className="mt-auto flex flex-col items-center justify-between gap-2 border-t border-[#ece7ef] bg-white/70 px-4 py-4 text-sm text-slate-500 sm:flex-row sm:px-6">
+      <div className="flex items-center gap-2">
+        <span className="relative flex h-2.5 w-2.5">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
         </span>
-        <span className="tracking-wide">All Systems Operational</span>
+        <span>All systems operational</span>
       </div>
-
-      <div className="flex items-center space-x-4">
-        <span>© {currentYear} TransitOps. All rights reserved.</span>
-      </div>
+      <span>© {currentYear} TransitOps. All rights reserved.</span>
     </footer>
   );
 }

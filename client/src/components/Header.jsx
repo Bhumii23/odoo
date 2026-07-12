@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Bell } from 'lucide-react';
+import { Search, Bell, Sparkles } from 'lucide-react';
 
 export default function Header({ activeTab }) {
   const getPageTitle = (tab) => {
@@ -11,41 +11,41 @@ export default function Header({ activeTab }) {
   };
 
   return (
-    <header className="h-16 sticky top-0 bg-[#fcf8f3]/80 backdrop-blur-xl border-b border-[#e9dfd7] px-6 flex items-center justify-between z-20 shadow-[0_12px_28px_-18px_rgba(31,41,55,0.3)]">
-      <div className="flex items-center space-x-2 text-sm text-slate-500">
-        <span>Home</span>
-        <span className="text-slate-400">/</span>
-        <span className="text-slate-800 font-semibold">{getPageTitle(activeTab)}</span>
-      </div>
-
-      <div className="flex-1 max-w-md mx-8 hidden sm:block">
-        <div className="relative">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search..."
-            className="w-full bg-white/80 text-slate-700 placeholder-slate-400 text-sm pl-10 pr-4 py-2 rounded-2xl border border-[#e7d9e8] focus:outline-none focus:border-[#c7abda] transition-colors duration-200 shadow-sm"
-          />
+    <header className="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-[#ece7ef] bg-white/80 px-4 py-4 backdrop-blur-xl sm:px-6">
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#7c3aed] to-[#a78bfa] text-white shadow-lg shadow-purple-200">
+          <Sparkles size={16} />
+        </div>
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-slate-400">Operations</p>
+          <h2 className="text-base font-semibold text-slate-900">{getPageTitle(activeTab)}</h2>
         </div>
       </div>
 
-      <div className="flex items-center space-x-3">
-        <button className="relative p-2 rounded-2xl text-slate-500 hover:text-[#5e3d75] hover:bg-[#f4ecf8] transition-colors duration-200 shadow-sm border border-transparent hover:border-[#e7d9e8]">
+      <div className="hidden flex-1 max-w-xl items-center justify-center md:flex">
+        <label className="flex w-full max-w-lg items-center gap-3 rounded-full border border-[#ece7ef] bg-[#f9f7fb] px-4 py-2.5 shadow-[0_8px_24px_-18px_rgba(15,23,42,0.25)]">
+          <Search className="h-4 w-4 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Search operations, drivers, vehicles"
+            className="w-full border-none bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
+          />
+        </label>
+      </div>
+
+      <div className="flex items-center gap-2 sm:gap-3">
+        <button className="relative rounded-full border border-[#ece7ef] bg-white p-2.5 text-slate-500 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:text-[#6d28d9]">
           <Bell size={18} />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#ef4444] rounded-full ring-2 ring-[#fcf8f3] animate-pulse"></span>
+          <span className="absolute right-1.5 top-1.5 h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-white" />
         </button>
 
-        <div className="flex items-center space-x-3 pl-3 border-l border-[#e7d9e8]">
-          <div className="text-right hidden md:block">
-            <p className="text-sm font-semibold text-slate-800">Raven K.</p>
-          </div>
-
-          <span className="text-[11px] bg-[#7c5a9f] text-white px-2.5 py-1 rounded-full font-semibold tracking-wide shadow-sm">
-            Dispatcher
-          </span>
-
-          <div className="h-9 w-9 rounded-full bg-[#efe4f7] border border-[#d7c0e4] flex items-center justify-center text-sm font-bold text-[#5e3d75] tracking-wider">
+        <div className="flex items-center gap-3 rounded-full border border-[#ece7ef] bg-white px-2 py-2 pr-3 shadow-sm">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#ede9fe] to-[#f5f3ff] text-sm font-semibold text-[#6d28d9]">
             RK
+          </div>
+          <div className="hidden sm:block">
+            <p className="text-sm font-semibold text-slate-900">Raven K.</p>
+            <p className="text-xs text-slate-500">Dispatcher</p>
           </div>
         </div>
       </div>

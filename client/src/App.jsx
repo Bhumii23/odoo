@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import WelcomeScreen from './components/WelcomeScreen';
+import AuthLayout from './components/AuthLayout';
 import DashboardLayout from './layouts/DashboardLayout';
 import Analytics from './pages/Analytics/Analytics';
 import FuelLogs from './pages/FuelLogs/FuelLogs';
@@ -13,7 +17,7 @@ import {
   ShieldAlert
 } from 'lucide-react';
 
-export default function App() {
+function DashboardView() {
   const [activeTab, setActiveTab] = useState('analytics');
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -335,13 +339,33 @@ export default function App() {
   };
 
   return (
-    <DashboardLayout
-      activeTab={activeTab}
-      setActiveTab={setActiveTab}
-      isCollapsed={isCollapsed}
-      setIsCollapsed={setIsCollapsed}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5, ease: 'easeInOut' }}
+      className="w-full h-full"
     >
-      {renderContent()}
-    </DashboardLayout>
+      <DashboardLayout
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        isCollapsed={isCollapsed}
+        setIsCollapsed={setIsCollapsed}
+      >
+        {renderContent()}
+      </DashboardLayout>
+    </motion.div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<WelcomeScreen />} />
+        <Route path="/auth" element={<AuthLayout />} />
+        <Route path="/dashboard" element={<DashboardView />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
