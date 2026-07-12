@@ -122,7 +122,8 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
       }
     });
 
-    const token = signToken({ userId: updatedUser.id, role: updatedUser.role });
+    const expiresIn = data.rememberMe ? '30d' : '8h';
+    const token = signToken({ userId: updatedUser.id, role: updatedUser.role }, expiresIn);
 
     res.status(200).json({ user: updatedUser, token });
   } catch (error) {
