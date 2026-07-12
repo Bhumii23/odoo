@@ -44,12 +44,12 @@ graph TD
 
 Access is strictly governed by the following matrix. The system supports three access levels: **Full (✓)**, **View-Only (view)**, and **No Access (—)**.
 
-| Role | Fleet | Drivers | Trips | Fuel/Exp. | Analytics |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Fleet Manager** | ✓ | ✓ | — | — | ✓ |
-| **Dispatcher** | view | — | ✓ | — | — |
-| **Safety Officer** | — | ✓ | view | — | — |
-| **Financial Analyst** | view | — | — | ✓ | ✓ |
+| Role | Fleet | Drivers | Trips | Maint. | Fuel/Exp. | Analytics | Settings |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Fleet Manager** | ✓ | ✓ | — | ✓ | — | ✓ | ✓ |
+| **Dispatcher** | view | — | ✓ | view | — | — | view |
+| **Safety Officer** | — | ✓ | view | ✓ | — | — | view |
+| **Financial Analyst** | view | — | — | — | ✓ | ✓ | view |
 
 > *Note: This matrix is enforced dynamically at the middleware level via the `requirePermission` guard.*
 
@@ -90,7 +90,7 @@ We use Docker to orchestrate the entire platform, making setup completely seamle
 1.  **Clone the repository:**
     ```bash
     git clone https://github.com/Bhumii23/odoo.git
-    cd transitops
+    cd odoo
     ```
 
 2.  **Environment Setup:**
