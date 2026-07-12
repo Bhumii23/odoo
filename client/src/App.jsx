@@ -23,21 +23,10 @@ import {
   Edit2,
   Trash2
 } from 'lucide-react';
-import { permissions } from './config/permissions';
-import AccessDenied from './components/AccessDenied';
 
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
-const tabToPermissionKey = {
-  'dashboard': 'dashboard',
-  'fleet': 'fleet',
-  'drivers': 'drivers',
-  'trips': 'trips',
-  'maintenance': 'maintenance',
-  'fuel-expenses': 'fuelExpenses',
-  'analytics': 'analytics',
-  'settings': 'settings'
-};
+
 
 function DashboardView() {
   const { user, logout } = useAuth();
@@ -136,13 +125,6 @@ function DashboardView() {
       return <Navigate to="/auth" replace />;
     }
 
-    const permKey = tabToPermissionKey[activeTab];
-    const userPermission = permissions[user.role]?.[permKey] || 'none';
-
-    if (userPermission === 'none') {
-      return <AccessDenied />;
-    }
-
     switch (activeTab) {
       case 'analytics':
         return <Analytics />;
@@ -151,7 +133,7 @@ function DashboardView() {
         return <DriverManagement />;
 
       case 'trips':
-        return <TripDispatcher permission={userPermission} />;
+        return <TripDispatcher />;
 
       case 'maintenance':
         return <Maintenance />;
@@ -186,9 +168,9 @@ function DashboardView() {
 
             {/* Sub-Tab Page View */}
             {fuelExpensesSubTab === 'fuel' ? (
-              <FuelLogs permission={userPermission} />
+              <FuelLogs />
             ) : (
-              <Expenses permission={userPermission} />
+              <Expenses />
             )}
           </div>
         );
@@ -297,15 +279,13 @@ function DashboardView() {
               </div>
 
               {/* Add Vehicle Button */}
-              {permissions[user.role]?.['fleet'] === 'edit' && (
-                <button
-                  onClick={handleAddVehicle}
-                  className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-gradient-to-r from-[#7c5a9f] to-[#5e3d75] hover:opacity-95 text-white px-5 py-2.5 rounded-xl text-xs font-semibold shadow-md shadow-purple-100 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer self-end"
-                >
-                  <Plus size={14} />
-                  <span>Add Vehicle</span>
-                </button>
-              )}
+              <button
+                onClick={handleAddVehicle}
+                className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-gradient-to-r from-[#7c5a9f] to-[#5e3d75] hover:opacity-95 text-white px-5 py-2.5 rounded-xl text-xs font-semibold shadow-md shadow-purple-100 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer self-end"
+              >
+                <Plus size={14} />
+                <span>Add Vehicle</span>
+              </button>
             </div>
 
             {/* Fleet Table Area */}
@@ -321,7 +301,7 @@ function DashboardView() {
                       <th className="px-6 py-4">Odometer</th>
                       <th className="px-6 py-4">Acq. Cost</th>
                       <th className="px-6 py-4">Status</th>
-                      {permissions[user.role]?.['fleet'] === 'edit' && <th className="px-6 py-4 text-right">Actions</th>}
+                      <th className="px-6 py-4 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100/60 text-xs text-slate-650">
@@ -344,29 +324,27 @@ function DashboardView() {
                               {vehicle.status}
                             </span>
                           </td>
-                          {permissions[user.role]?.['fleet'] === 'edit' && (
-                            <td className="px-6 py-4 text-right">
-                              <div className="flex justify-end space-x-3.5">
-                                <button
-                                  onClick={() => alert(`Edit vehicle ${vehicle.name}`)}
-                                  className="text-slate-400 hover:text-[#7c5a9f] font-bold transition-colors cursor-pointer text-[11px]"
-                                >
-                                  Edit
-                                </button>
-                                <button
-                                  onClick={() => alert(`Delete vehicle ${vehicle.name}`)}
-                                  className="text-slate-400 hover:text-rose-500 font-bold transition-colors cursor-pointer text-[11px]"
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                            </td>
-                          )}
+                          <td className="px-6 py-4 text-right">
+                            <div className="flex justify-end space-x-3.5">
+                              <button
+                                onClick={() => alert(`Edit vehicle ${vehicle.name}`)}
+                                className="text-slate-400 hover:text-[#7c5a9f] font-bold transition-colors cursor-pointer text-[11px]"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => alert(`Delete vehicle ${vehicle.name}`)}
+                                className="text-slate-400 hover:text-rose-500 font-bold transition-colors cursor-pointer text-[11px]"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </td>
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={permissions[user.role]?.['fleet'] === 'edit' ? "8" : "7"} className="px-6 py-8 text-center text-slate-400 font-semibold">
+                        <td colSpan="8" className="px-6 py-8 text-center text-slate-400 font-semibold">
                           No matching vehicles found.
                         </td>
                       </tr>

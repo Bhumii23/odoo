@@ -3,7 +3,7 @@ import api from '../../lib/api';
 import { Plus, Search, Edit2, Trash2, FileSpreadsheet, X } from 'lucide-react';
 
 // 1. ExpenseHeader Component
-function ExpenseHeader({ onAddClick, onExportClick, permission }) {
+function ExpenseHeader({ onAddClick, onExportClick }) {
   return (
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 rounded-2xl border border-slate-100 bg-white p-5 shadow-[0_8px_30px_rgb(0,0,0,0.012)] text-left">
       <div>
@@ -21,15 +21,13 @@ function ExpenseHeader({ onAddClick, onExportClick, permission }) {
           <FileSpreadsheet size={13} />
           <span>Export CSV</span>
         </button>
-        {permission === 'edit' && (
-          <button
-            onClick={onAddClick}
-            className="flex items-center space-x-1.5 bg-gradient-to-r from-[#7c5a9f] to-[#5e3d75] hover:opacity-95 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md shadow-purple-100 transition-all hover:-translate-y-0.5 cursor-pointer"
-          >
-            <Plus size={13} />
-            <span>Add Expense</span>
-          </button>
-        )}
+        <button
+          onClick={onAddClick}
+          className="flex items-center space-x-1.5 bg-gradient-to-r from-[#7c5a9f] to-[#5e3d75] hover:opacity-95 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md shadow-purple-100 transition-all hover:-translate-y-0.5 cursor-pointer"
+        >
+          <Plus size={13} />
+          <span>Add Expense</span>
+        </button>
       </div>
     </div>
   );
@@ -54,7 +52,7 @@ function ExpenseSearch({ value, onChange }) {
 }
 
 // 3. ExpenseTable Component (with nested row renderer)
-function ExpenseTable({ expenses, onDelete, permission }) {
+function ExpenseTable({ expenses, onDelete }) {
   const getStatusClass = (status) => {
     switch (status) {
       case 'Approved':
@@ -81,7 +79,7 @@ function ExpenseTable({ expenses, onDelete, permission }) {
               <th className="px-5 py-3">Date</th>
               <th className="px-5 py-3">Remarks</th>
               <th className="px-5 py-3 text-center">Status</th>
-              {permission === 'edit' && <th className="px-5 py-3 text-center">Actions</th>}
+              <th className="px-5 py-3 text-center">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100/60 text-xs text-slate-650">
@@ -102,26 +100,24 @@ function ExpenseTable({ expenses, onDelete, permission }) {
                       {expense.status}
                     </span>
                   </td>
-                  {permission === 'edit' && (
-                    <td className="px-5 py-3.5 text-center">
-                      <div className="flex items-center justify-center space-x-2.5">
-                        <button 
-                          onClick={() => alert(`Edit Expense details for ${expense.type}`)}
-                          className="p-1 text-slate-400 hover:text-[#7c5a9f] transition-colors cursor-pointer"
-                          title="Edit Expense"
-                        >
-                          <Edit2 size={12} />
-                        </button>
-                        <button 
-                          onClick={() => onDelete(expense.id)}
-                          className="p-1 text-slate-400 hover:text-rose-550 transition-colors cursor-pointer"
-                          title="Delete Expense"
-                        >
-                          <Trash2 size={12} />
-                        </button>
-                      </div>
-                    </td>
-                  )}
+                  <td className="px-5 py-3.5 text-center">
+                    <div className="flex items-center justify-center space-x-2.5">
+                      <button 
+                        onClick={() => alert(`Edit Expense details for ${expense.type}`)}
+                        className="p-1 text-slate-400 hover:text-[#7c5a9f] transition-colors cursor-pointer"
+                        title="Edit Expense"
+                      >
+                        <Edit2 size={12} />
+                      </button>
+                      <button 
+                        onClick={() => onDelete(expense.id)}
+                        className="p-1 text-slate-400 hover:text-rose-550 transition-colors cursor-pointer"
+                        title="Delete Expense"
+                      >
+                        <Trash2 size={12} />
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               ))
             ) : (
@@ -158,7 +154,7 @@ function ExpenseTable({ expenses, onDelete, permission }) {
 }
 
 // 5. Main Page Component: Expenses
-export default function Expenses({ permission }) {
+export default function Expenses() {
   const [expenses, setExpenses] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -197,9 +193,15 @@ export default function Expenses({ permission }) {
     status: 'Pending',
   });
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (confirm("Are you sure you want to delete this expense record?")) {
-      setExpenses((prev) => prev.filter((item) => item.id !== id));
+      try {
+        await api.delete(`/expenses/${id}`);
+        setExpenses((prev) => prev.filter((item) => item.id !== id));
+      } catch (err) {
+        console.error(err);
+        alert(err.response?.data?.error || 'Failed to delete expense');
+      }
     }
   };
 
@@ -273,8 +275,7 @@ export default function Expenses({ permission }) {
     <div className="space-y-6">
       <ExpenseHeader 
         onAddClick={() => setIsModalOpen(true)} 
-        onExportClick={handleExportCSV} 
-        permission={permission}
+        onExportClick={handleExportCSV}
       />
 
       <ExpenseSearch 
@@ -284,11 +285,10 @@ export default function Expenses({ permission }) {
 
       <ExpenseTable 
         expenses={filteredExpenses} 
-        onDelete={handleDelete} 
-        permission={permission}
+        onDelete={handleDelete}
       />
       {/* Add Expense Modal */}
-      {isModalOpen && permission === 'edit' && (
+      {isModalOpen && (
         <div className="fixed inset-0 bg-slate-950/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white border border-slate-100 rounded-[24px] max-w-lg w-full overflow-hidden shadow-2xl flex flex-col">
             

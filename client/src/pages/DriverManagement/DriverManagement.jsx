@@ -19,7 +19,7 @@ export default function DriverManagement() {
     setIsLoading(true);
     try {
       const res = await api.get('/drivers');
-      setDrivers(res.data);
+      setDrivers(res.data.data || res.data);
     } catch (err) {
       console.error('Error fetching drivers', err);
     } finally {
@@ -49,9 +49,15 @@ export default function DriverManagement() {
   });
 
   // Delete Driver action
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (confirm("Are you sure you want to remove this driver from the registry?")) {
-      setDrivers((prev) => prev.filter((d) => d.id !== id));
+      try {
+        await api.delete(`/drivers/${id}`);
+        setDrivers((prev) => prev.filter((d) => d.id !== id));
+      } catch (err) {
+        console.error('Error deleting driver', err);
+        alert(err.response?.data?.error || 'Failed to delete driver');
+      }
     }
   };
 

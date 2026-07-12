@@ -23,7 +23,8 @@ export function useTripDispatcher() {
         api.get('/vehicles')
       ]);
       setTrips(tripsRes.data);
-      setDrivers(driversRes.data);
+      // Driver API wraps response in { data: [...] }
+      setDrivers(driversRes.data.data || driversRes.data);
       setVehicles(vehiclesRes.data);
     } catch (err) {
       console.error(err);
@@ -35,43 +36,53 @@ export function useTripDispatcher() {
   }, []);
 
   const stats = useMemo(() => {
-    const activeCount = trips.filter((trip) => trip.status === 'Dispatched').length;
-    const draftCount = trips.filter((trip) => trip.status === 'Draft').length;
-    const completedCount = trips.filter((trip) => trip.status === 'Completed').length;
-    const cancelledCount = trips.filter((trip) => trip.status === 'Cancelled').length;
-    const availableDrivers = drivers.filter((driver) => driver.status === 'Available').length;
-    const availableVehicles = vehicles.filter((vehicle) => vehicle.status === 'Available').length;
+    const activeCount = trips.filter((trip) => trip.status === 'DISPATCHED').length;
+    const draftCount = trips.filter((trip) => trip.status === 'DRAFT').length;
+    const completedCount = trips.filter((trip) => trip.status === 'COMPLETED').length;
+    const cancelledCount = trips.filter((trip) => trip.status === 'CANCELLED').length;
+    const availableDrivers = drivers.filter((driver) => driver.status === 'AVAILABLE').length;
+    const availableVehicles = vehicles.filter((vehicle) => vehicle.status === 'AVAILABLE').length;
 
     return [
       { title: 'Active Trips', value: activeCount, detail: 'In motion now' },
       { title: 'Draft Trips', value: draftCount, detail: 'Preparing dispatch' },
-      { title: 'Completed Today', value: completedCount, detail: 'Closed successfully' },
+      { title: 'Completed', value: completedCount, detail: 'Closed successfully' },
       { title: 'Cancelled', value: cancelledCount, detail: 'Needs attention' },
       { title: 'Available Drivers', value: availableDrivers, detail: 'Ready for assignment' },
       { title: 'Available Vehicles', value: availableVehicles, detail: 'Ready for dispatch' },
     ];
-  }, [trips]);
+  }, [trips, drivers, vehicles]);
 
   const filteredTrips = useMemo(() => {
     return trips.filter((trip) => {
-      const matchesSearch = [trip.id, trip.source, trip.destination, trip.driverName, trip.vehicleName]
+      const driverName = trip.driver?.name || '';
+      const vehicleName = trip.vehicle?.name || '';
+      const matchesSearch = [trip.id, trip.source, trip.destination, driverName, vehicleName]
         .join(' ')
         .toLowerCase()
         .includes(filters.search.toLowerCase());
       const matchesStatus = filters.status === 'All' || trip.status === filters.status;
-      const matchesDriver = filters.driver === 'All' || trip.driverName === filters.driver;
-      const matchesVehicle = filters.vehicle === 'All' || trip.vehicleName === filters.vehicle;
-      const matchesDate = !filters.date || trip.dispatchDate === filters.date;
+      const matchesDriver = filters.driver === 'All' || driverName === filters.driver;
+      const matchesVehicle = filters.vehicle === 'All' || vehicleName === filters.vehicle;
+      const matchesDate = !filters.date || (trip.createdAt && trip.createdAt.startsWith(filters.date));
       return matchesSearch && matchesStatus && matchesDriver && matchesVehicle && matchesDate;
     });
   }, [filters, trips]);
 
   const createTrip = async (trip) => {
     try {
-      const res = await api.post('/trips', trip);
+      const res = await api.post('/trips', {
+        source: trip.source,
+        destination: trip.destination,
+        vehicleId: Number(trip.vehicleId),
+        driverId: Number(trip.driverId),
+        cargoWeight: Number(trip.cargoWeight),
+        plannedDistance: Number(trip.distance) || 1,
+      });
       setTrips([res.data, ...trips]);
     } catch(err) {
       console.error(err);
+      alert(err.response?.data?.error || 'Failed to create trip');
     }
   };
 
@@ -81,15 +92,26 @@ export function useTripDispatcher() {
       setTrips((current) => current.map((trip) => (trip.id === tripId ? { ...trip, ...res.data } : trip)));
     } catch(err) {
       console.error(err);
+      alert(err.response?.data?.error || 'Failed to update trip');
     }
+  };
+
+  const dispatchTrip = async (tripId) => {
+    await updateTrip(tripId, { status: 'DISPATCHED' });
   };
 
   const cancelTrip = async (tripId) => {
     await updateTrip(tripId, { status: 'CANCELLED' });
   };
 
-  const completeTrip = async (tripId) => {
-    await updateTrip(tripId, { status: 'COMPLETED' });
+  const completeTrip = async (tripId, completionData) => {
+    await updateTrip(tripId, {
+      status: 'COMPLETED',
+      finalOdometer: Number(completionData.finalOdometer),
+      fuelLiters: Number(completionData.fuelLiters),
+      fuelCost: Number(completionData.fuelCost),
+      revenue: Number(completionData.revenue),
+    });
   };
 
   return {
@@ -100,6 +122,7 @@ export function useTripDispatcher() {
     filteredTrips,
     createTrip,
     updateTrip,
+    dispatchTrip,
     cancelTrip,
     completeTrip,
     drivers,

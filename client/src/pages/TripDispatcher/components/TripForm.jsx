@@ -20,11 +20,11 @@ export default function TripForm({ onSubmit, drivers, vehicles }) {
   const [warning, setWarning] = useState('');
 
   const availableVehicles = useMemo(
-    () => vehicles.filter((vehicle) => vehicle.status === 'Available'),
+    () => vehicles.filter((vehicle) => vehicle.status === 'AVAILABLE'),
     [vehicles]
   );
   const availableDrivers = useMemo(
-    () => drivers.filter((driver) => driver.status === 'Available'),
+    () => drivers.filter((driver) => driver.status === 'AVAILABLE'),
     [drivers]
   );
 
@@ -37,7 +37,7 @@ export default function TripForm({ onSubmit, drivers, vehicles }) {
     [availableDrivers, form.driverId]
   );
 
-  const cargoTooHeavy = Number(form.cargoWeight) > Number(selectedVehicle?.capacityKg || 0);
+  const cargoTooHeavy = Number(form.cargoWeight) > Number(selectedVehicle?.maxLoadCapacity || 0);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -188,7 +188,7 @@ export default function TripForm({ onSubmit, drivers, vehicles }) {
                   <option value="">Select vehicle</option>
                   {availableVehicles.map((vehicle) => (
                     <option key={vehicle.id} value={vehicle.id}>
-                      {vehicle.name} · {vehicle.capacityKg} kg
+                      {vehicle.name} · {vehicle.maxLoadCapacity} kg
                     </option>
                   ))}
                 </select>
@@ -232,7 +232,7 @@ export default function TripForm({ onSubmit, drivers, vehicles }) {
 
           {cargoTooHeavy && selectedVehicle ? (
             <div className="rounded-xl border border-amber-100 bg-amber-50/50 p-3 text-xs text-amber-700">
-              The selected vehicle handles {selectedVehicle.capacityKg} kg, so this trip is over capacity.
+              The selected vehicle handles {selectedVehicle.maxLoadCapacity} kg, so this trip is over capacity.
             </div>
           ) : null}
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
 
-export default function TripHeader({ onCreateTrip, permission }) {
+export default function TripHeader({ onCreateTrip }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -17,15 +17,13 @@ export default function TripHeader({ onCreateTrip, permission }) {
             Create, assign and monitor transport operations with clarity and control.
           </p>
         </div>
-        {permission === 'edit' && (
-          <button
-            onClick={onCreateTrip}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7c5a9f] to-[#5e3d75] hover:opacity-95 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-purple-100 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
-          >
-            <Plus size={14} />
-            Create Trip
-          </button>
-        )}
+        <button
+          onClick={onCreateTrip}
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7c5a9f] to-[#5e3d75] hover:opacity-95 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-purple-100 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
+        >
+          <Plus size={14} />
+          Create Trip
+        </button>
       </div>
     </motion.div>
   );

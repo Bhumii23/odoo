@@ -31,9 +31,9 @@ export function useMaintenance() {
   }, []);
 
   const stats = useMemo(() => {
-    const inShop = vehicles.filter((vehicle) => vehicle.status === 'In Shop').length;
-    const upcoming = serviceHistory.filter((record) => record.status === 'Scheduled').length;
-    const completed = serviceHistory.filter((record) => record.status === 'Completed').length;
+    const inShop = vehicles.filter((vehicle) => vehicle.status === 'IN_SHOP').length;
+    const upcoming = serviceHistory.filter((record) => record.status === 'PENDING_APPROVAL' || record.status === 'IN_PROGRESS').length;
+    const completed = serviceHistory.filter((record) => record.status === 'COMPLETED').length;
     const averageCost = serviceHistory.length
       ? Math.round(serviceHistory.reduce((sum, record) => sum + (record.cost || 0), 0) / serviceHistory.length)
       : 0;
@@ -64,9 +64,10 @@ export function useMaintenance() {
       // payload from form uses camelCase properties. Backend might expect specific ones.
       const res = await api.post('/maintenance', {
         vehicleId: payload.vehicleId,
-        serviceType: 'ROUTINE_MAINTENANCE', // Simplified for hackathon
+        serviceType: 'ROUTINE_MAINTENANCE',
         description: payload.description,
         cost: payload.estimatedCost || 0,
+        date: new Date().toISOString(),
       });
       setServiceHistory([res.data, ...serviceHistory]);
       setVehicles((current) => current.map((v) => (v.id === payload.vehicleId ? { ...v, status: 'In Shop' } : v)));
