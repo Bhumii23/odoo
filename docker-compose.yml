@@ -14,5 +14,34 @@ services:
     volumes:
       - transitops_pgdata:/var/lib/postgresql/data
 
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: transitops-server
+    restart: always
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      # We override the local DATABASE_URL here because Docker needs to connect to the 'db' container, not 'localhost'
+      - DATABASE_URL=postgresql://transitops:devpassword@db:5432/transitops
+    depends_on:
+      - db
+
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    container_name: transitops-client
+    restart: always
+    ports:
+      - "5173:5173"
+    env_file:
+      - .env
+    depends_on:
+      - server
+
 volumes:
   transitops_pgdata:
