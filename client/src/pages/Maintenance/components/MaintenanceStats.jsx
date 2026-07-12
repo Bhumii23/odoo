@@ -3,22 +3,21 @@ import { motion } from 'framer-motion';
 
 export default function MaintenanceStats({ stats }) {
   return (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-      {stats.map((card, index) => (
-        <motion.div
-          key={card.title}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.05 }}
-          className="rounded-[24px] border border-[#E9E2EC] bg-white/90 p-5 shadow-[0_18px_48px_-28px_rgba(93,63,88,0.28)]"
-        >
-          <p className="text-sm font-medium text-[#7A7180]">{card.title}</p>
-          <div className="mt-3 flex items-end justify-between gap-3">
-            <span className="text-3xl font-semibold text-[#2E2331]">{card.value}</span>
-            <span className="text-xs font-semibold text-[#5D3F58]">{card.detail}</span>
-          </div>
-        </motion.div>
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="grid gap-4 md:grid-cols-3 text-left"
+    >
+      {[
+        { title: 'In Shop Currently', value: stats.inShop, color: 'text-rose-600' },
+        { title: 'Completed Services', value: stats.completed, color: 'text-emerald-600' },
+        { title: 'Total Expenses', value: `₹ ${stats.totalExpenses.toLocaleString('en-IN')}`, color: 'text-slate-800' }
+      ].map((card, i) => (
+        <div key={i} className="bg-white border border-slate-100 p-5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.012)] hover:shadow-[0_12px_24px_rgba(0,0,0,0.02)] transition-shadow duration-200">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">{card.title}</span>
+          <span className={`text-2xl font-bold ${card.color} block`}>{card.value}</span>
+        </div>
       ))}
-    </div>
+    </motion.div>
   );
 }

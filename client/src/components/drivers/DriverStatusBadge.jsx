@@ -26,7 +26,7 @@ export default function DriverStatusBadge({ status, licenseExpiry }) {
   const label = licenseExpiry && new Date(licenseExpiry) < new Date(new Date().setHours(0, 0, 0, 0)) ? 'Expired License' : status;
 
   return (
-    <span className={`inline-flex rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${getBadgeClass(status, licenseExpiry)}`}>
+    <span className={`inline-flex rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${getBadgeClass(status, licenseExpiry)}`}>
       {label}
     </span>
   );

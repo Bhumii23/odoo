@@ -3,17 +3,17 @@ import { Plus, FileSpreadsheet, Sparkles } from 'lucide-react';
 
 export default function DriverHeader({ onAddDriver, onExportCSV }) {
   return (
-    <div className="rounded-[32px] border border-[#ece7ef] bg-white/80 p-6 shadow-[0_24px_80px_-36px_rgba(15,23,42,0.28)] backdrop-blur md:p-7">
+    <div className="rounded-[20px] border border-slate-100 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.012)] text-left">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#ece7ef] bg-[#f9f7fb] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#6d28d9] shadow-sm">
-            <Sparkles size={12} />
+          <div className="inline-flex items-center gap-2 rounded-lg border border-slate-100 bg-slate-50 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-slate-550 shadow-sm">
+            <Sparkles size={11} />
             Driver Operations
           </div>
-          <h1 className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
-            Driver management
+          <h1 className="mt-4 text-2xl font-bold tracking-tight text-slate-800">
+            Driver Registry
           </h1>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
+          <p className="mt-1.5 text-xs text-slate-450 leading-relaxed font-semibold">
             Keep licenses, assignments, and safety readiness in sync with a calm operational workspace.
           </p>
         </div>
@@ -21,16 +21,16 @@ export default function DriverHeader({ onAddDriver, onExportCSV }) {
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={onExportCSV}
-            className="flex items-center gap-2 rounded-2xl border border-[#ece7ef] bg-white px-3.5 py-2.5 text-sm font-semibold text-slate-600 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#d9cceb] hover:bg-[#f8f6f9]"
+            className="flex items-center gap-2 rounded-xl border border-slate-100 bg-slate-50/50 px-4 py-2.5 text-xs font-bold text-slate-500 hover:text-slate-700 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer hover:bg-slate-50"
           >
-            <FileSpreadsheet size={14} />
+            <FileSpreadsheet size={13} />
             <span>Export CSV</span>
           </button>
           <button
             onClick={onAddDriver}
-            className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#7c3aed] to-[#a78bfa] px-3.5 py-2.5 text-sm font-semibold text-white shadow-[0_15px_34px_-18px_rgba(109,40,217,0.65)] transition-all duration-200 hover:-translate-y-0.5"
+            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#7c5a9f] to-[#5e3d75] hover:opacity-95 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-purple-100 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
           >
-            <Plus size={14} />
+            <Plus size={13} />
             <span>Add Driver</span>
           </button>
         </div>

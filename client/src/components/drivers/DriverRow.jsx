@@ -17,31 +17,31 @@ export default function DriverRow({ driver, onEdit, onDelete, isEven }) {
     .toUpperCase();
 
   return (
-    <tr className={`transition-all duration-200 hover:bg-[#f8f6f9] ${isEven ? 'bg-[#fcfbfe]' : 'bg-white'}`}>
-      <td className="px-5 py-3.5">
+    <tr className="hover:bg-slate-50/50 transition-colors duration-100">
+      <td className="px-5 py-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#efe7ff] to-[#f5f3ff] text-sm font-semibold text-[#6d28d9]">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#7c5a9f]/10 to-[#5e3d75]/15 text-xs font-bold text-[#7c5a9f] shadow-sm">
             {initials}
           </div>
           <div>
-            <p className="font-semibold text-slate-900">{driver.name}</p>
-            <p className="text-xs text-slate-500">{driver.phoneNumber || 'No number provided'}</p>
+            <p className="font-bold text-slate-800">{driver.name}</p>
+            <p className="text-[10px] text-slate-400 font-semibold mt-0.5">{driver.phoneNumber || 'No number provided'}</p>
           </div>
         </div>
       </td>
-      <td className="px-5 py-3.5 font-mono text-sm text-slate-500">{driver.employeeId}</td>
-      <td className="px-5 py-3.5 font-mono text-sm text-slate-500">{driver.licenseNumber}</td>
-      <td className="px-5 py-3.5 font-medium text-slate-700">{driver.licenseCategory}</td>
-      <td className="px-5 py-3.5 text-sm text-slate-500">{driver.phoneNumber}</td>
-      <td className="px-5 py-3.5 text-sm text-slate-500">{driver.assignedVehicle || 'None'}</td>
-      <td className={`px-5 py-3.5 text-right text-sm font-semibold ${getSafetyScoreColor(driver.safetyScore)}`}>
+      <td className="px-5 py-4 font-mono text-slate-500">{driver.employeeId}</td>
+      <td className="px-5 py-4 font-mono text-slate-500">{driver.licenseNumber}</td>
+      <td className="px-5 py-4 font-semibold text-slate-650">{driver.licenseCategory}</td>
+      <td className="px-5 py-4 text-slate-500 font-medium">{driver.phoneNumber}</td>
+      <td className="px-5 py-4 font-semibold text-slate-700">{driver.assignedVehicle || 'None'}</td>
+      <td className={`px-5 py-4 text-right font-bold ${getSafetyScoreColor(driver.safetyScore)}`}>
         {driver.safetyScore}
       </td>
-      <td className="px-5 py-3.5 text-sm text-slate-500">{driver.licenseExpiry}</td>
-      <td className="px-5 py-3.5 text-center">
+      <td className="px-5 py-4 text-slate-500 font-medium">{driver.licenseExpiry}</td>
+      <td className="px-5 py-4 text-center">
         <DriverStatusBadge status={driver.status} licenseExpiry={driver.licenseExpiry} />
       </td>
-      <td className="px-5 py-3.5 text-center">
+      <td className="px-5 py-4 text-center">
         <DriverActions
           onEdit={() => onEdit(driver.id)}
           onDelete={() => onDelete(driver.id)}
