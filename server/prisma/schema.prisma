@@ -25,6 +25,31 @@ enum Role {
   FINANCIAL_ANALYST
 }
 
+enum AccessLevel {
+  NONE
+  VIEW
+  FULL
+}
+
+enum Module {
+  FLEET
+  DRIVERS
+  TRIPS
+  MAINTENANCE
+  FUEL_EXPENSES
+  ANALYTICS
+  SETTINGS
+}
+
+model RolePermission {
+  id     Int         @id @default(autoincrement())
+  role   Role
+  module Module
+  access AccessLevel
+
+  @@unique([role, module])
+}
+
 model Vehicle {
   id                 Int               @id @default(autoincrement())
   registrationNumber String            @unique
